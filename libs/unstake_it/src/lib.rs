@@ -1,12 +1,11 @@
 use anyhow::Result;
-use solana_program::{borsh0_10::try_from_slice_unchecked, pubkey::Pubkey};
+use solana_program::{borsh0_9::try_from_slice_unchecked, pubkey::Pubkey};
 use unstake_interface::{Fee, FeeEnum, Pool, ProtocolFee, Rational};
 
 mod pda;
 mod stakedex_traits;
 
 pub use pda::*;
-pub use stakedex_traits::*;
 
 pub const UNSTAKE_IT_LABEL: &str = "Unstake.it";
 

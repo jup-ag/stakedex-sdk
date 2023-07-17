@@ -1,12 +1,7 @@
 [workspace]
 resolver = "2"
 
-members = [
-    "stakedex_sdk",
-    "common",
-    "libs/*",
-    "interfaces/*"
-]
+members = ["stakedex_sdk", "common", "libs/*", "interfaces/*"]
 
 [workspace.dependencies]
 anyhow = "^1.0"
@@ -16,8 +11,8 @@ itertools = ">=0.1"
 jupiter-amm-interface = "~0.3.2"
 lazy_static = "^1.0"
 # set git dependencies to branch instead of locking to rev so that consumers can upgrade easily
-lido = { git = "https://github.com/jup-ag/solido", branch = "jupiter", features = ["no-entrypoint"] } # rev = "ec25a9b"
-marinade_finance_interface = { git = "https://github.com/igneous-labs/marinade_finance_interface", branch = "master" } # rev = "4d1895b"
+lido = { git = "https://github.com/jup-ag/solido", rev = "2c85ddf7b50d8162d2b81d79d7fcbfd5e05dc967", features = ["no-entrypoint"] }
+marinade_finance_interface = { git = "https://github.com/jup-ag/marinade_finance_interface", rev = "5747b5350c5505fc2ea597c3f8ae1f8cf71c363d" } # rev = "4d1895b"
 num-derive = ">=0.1"
 num-traits = ">=0.1"
 rust_decimal = ">=1.0,<=1.32.0" # anything >1.32 uses borsh ^1
