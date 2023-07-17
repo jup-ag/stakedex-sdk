@@ -74,13 +74,25 @@ fn fetch_accounts(accounts_pubkeys: &[Pubkey]) -> HashMap<Pubkey, Account> {
 }
 
 #[test]
-fn test_swap_via_stake_unknown_token() {
+fn test_quote_swap_via_stake_jitosol_bsol() {
+    STAKEDEX
+        .quote_swap_via_stake(&QuoteParams {
+            amount: 1_000_000_000,
+            input_mint: jitosol::ID,
+            output_mint: bsol::ID,
+            swap_mode: jupiter_amm_interface::SwapMode::ExactIn,
+        })
+        .unwrap();
+}
+
+#[test]
+fn test_quote_swap_via_stake_unknown_token() {
     let unknown_token = Pubkey::new_unique();
     let res = STAKEDEX.quote_swap_via_stake(&QuoteParams {
         amount: 1_000_000_000,
         input_mint: unknown_token,
         output_mint: bsol::ID,
-        swap_mode: SwapMode::default(),
+        swap_mode: jupiter_amm_interface::SwapMode::ExactIn,
     });
     assert!(res.is_err());
 }
@@ -307,13 +319,17 @@ fn test_jsol_drain_vsa_edge_case() {
         .validator_list
         .validators
         .iter()
-        .max_by_key(|v| v.active_stake_lamports)
+        .max_by_key(|v| u64::from(v.active_stake_lamports))
         .unwrap();
     let max_withdraw_lamports = largest_active_stake_vsi.active_stake_lamports;
     let parts_after_fees = (STAKEDEX.jpool.stake_pool.stake_withdrawal_fee.denominator
         - STAKEDEX.jpool.stake_pool.stake_withdrawal_fee.numerator)
         as u128;
+<<<<<<< HEAD
     let max_withdraw_lamports_bef_fees = u128::from(max_withdraw_lamports)
+=======
+    let max_withdraw_lamports_bef_fees = (u128::from(u64::from(max_withdraw_lamports))
+>>>>>>> 6314bd6 (Jupiter changes for jupiter-core compat)
         * (STAKEDEX.jpool.stake_pool.stake_withdrawal_fee.denominator as u128)
         + parts_after_fees
         - 1)
@@ -325,17 +341,17 @@ fn test_jsol_drain_vsa_edge_case() {
         .unwrap();
     let max_possible_quote = STAKEDEX
         .quote_swap_via_stake(&QuoteParams {
-            amount: max_withdraw_jsol,
-            input_mint: jsol::ID,
+            amount: 100_000_000_000,
+            input_mint: stsol::ID,
             output_mint: msol::ID,
-            swap_mode: SwapMode::default(),
+            swap_mode: jupiter_amm_interface::SwapMode::ExactIn,
         })
         .unwrap();
     let should_fail = STAKEDEX.quote_swap_via_stake(&QuoteParams {
         amount: max_withdraw_jsol + 1,
         input_mint: jsol::ID,
         output_mint: msol::ID,
-        swap_mode: SwapMode::default(),
+        swap_mode: SwapMode::ExactIn,
     });
     assert!(should_fail.is_err());
 
