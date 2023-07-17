@@ -170,6 +170,6 @@ where
                 return vec![];
             }
         };
-        vec![(stake_pool_program, stake_pool_label.into())]
+        vec![(stake_pool_program, stake_pool_label.to_lowercase())]
     }
 }
