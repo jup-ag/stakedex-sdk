@@ -71,6 +71,8 @@ pub trait DepositSol: BaseStakePoolAmm {
             ..Quote::default()
         }
     }
+
+    fn accounts_len(&self) -> usize;
 }
 
 // newtype pattern in order to impl external trait on internal generic
@@ -117,7 +119,7 @@ where
                 quote_params.output_mint
             ));
         }
-        let deposit_sol_quote = self.0.get_deposit_sol_quote(quote_params.in_amount)?;
+        let deposit_sol_quote = self.0.get_deposit_sol_quote(quote_params.amount)?;
         let quote = self.0.convert_quote(deposit_sol_quote);
         Ok(quote)
     }
@@ -127,9 +129,9 @@ where
         let mut account_metas = vec![STAKEDEX_ACCOUNT_META.clone()];
         account_metas.extend(<[AccountMeta; STAKE_WRAPPED_SOL_IX_ACCOUNTS_LEN]>::from(
             &StakeWrappedSolKeys {
-                user: swap_params.user_transfer_authority,
-                wsol_from: swap_params.user_source_token_account,
-                dest_token_to: swap_params.user_destination_token_account,
+                user: swap_params.token_transfer_authority,
+                wsol_from: swap_params.source_token_account,
+                dest_token_to: swap_params.destination_token_account,
                 wsol_mint: swap_params.source_mint,
                 dest_token_mint: swap_params.destination_mint,
                 token_program: spl_token::ID,
@@ -158,5 +160,16 @@ where
 
     fn unidirectional(&self) -> bool {
         true
+    }
+
+    fn get_accounts_len(&self) -> usize {
+        1 + STAKE_WRAPPED_SOL_IX_ACCOUNTS_LEN + self.0.accounts_len()
+    }
+
+    fn program_dependencies(&self) -> Vec<(Pubkey, String)> {
+        vec![(
+            self.0.program_id(),
+            self.0.stake_pool_label().to_lowercase(),
+        )]
     }
 }

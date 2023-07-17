@@ -2,7 +2,7 @@ use anyhow::{anyhow, Result};
 use lido::token::Lamports;
 use solana_program::instruction::Instruction;
 use stakedex_deposit_sol_interface::{
-    lido_deposit_sol_ix, LidoDepositSolIxArgs, LidoDepositSolKeys,
+    lido_deposit_sol_ix, LidoDepositSolIxArgs, LidoDepositSolKeys, LIDO_DEPOSIT_SOL_IX_ACCOUNTS_LEN,
 };
 use stakedex_sdk_common::{lido_program, lido_state, DepositSol, DepositSolQuote};
 
@@ -41,5 +41,9 @@ impl DepositSol for LidoStakedex {
             },
             LidoDepositSolIxArgs {},
         )?)
+    }
+
+    fn accounts_len(&self) -> usize {
+        LIDO_DEPOSIT_SOL_IX_ACCOUNTS_LEN
     }
 }

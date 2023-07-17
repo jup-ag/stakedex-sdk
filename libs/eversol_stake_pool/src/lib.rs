@@ -1,12 +1,12 @@
 use anyhow::Result;
-use solana_program::{
-    borsh::try_from_slice_unchecked, native_token, pubkey::Pubkey, stake_history::Epoch,
-};
-use spl_stake_pool::{
+use eversol_spl_stake_pool::{
     error::StakePoolError,
     find_stake_program_address, find_withdraw_authority_program_address,
     state::{StakePool, StakeStatus, ValidatorList},
     MINIMUM_ACTIVE_STAKE,
+};
+use solana_program::{
+    borsh::try_from_slice_unchecked, native_token, pubkey::Pubkey, stake_history::Epoch,
 };
 use stakedex_sdk_common::{
     eversol_program, eversol_stake_pool, DepositStakeQuote, WithdrawStakeQuote,

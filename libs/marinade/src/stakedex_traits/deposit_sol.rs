@@ -2,6 +2,7 @@ use anyhow::Result;
 use solana_program::instruction::Instruction;
 use stakedex_deposit_sol_interface::{
     marinade_deposit_sol_ix, MarinadeDepositSolIxArgs, MarinadeDepositSolKeys,
+    MARINADE_DEPOSIT_SOL_IX_ACCOUNTS_LEN,
 };
 use stakedex_sdk_common::{marinade_program, marinade_state, DepositSol, DepositSolQuote};
 
@@ -42,5 +43,9 @@ impl DepositSol for MarinadeStakedex {
             },
             MarinadeDepositSolIxArgs {},
         )?)
+    }
+
+    fn accounts_len(&self) -> usize {
+        MARINADE_DEPOSIT_SOL_IX_ACCOUNTS_LEN
     }
 }

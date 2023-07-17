@@ -1,4 +1,4 @@
-use jupiter_amm_interface::{QuoteParams, SwapParams};
+use jupiter_amm_interface::{QuoteParams, SwapMode, SwapParams};
 use lazy_static::lazy_static;
 use solana_account_decoder::UiAccountEncoding;
 use solana_client::{
@@ -58,9 +58,10 @@ fn fetch_accounts(accounts_pubkeys: &[Pubkey]) -> HashMap<Pubkey, Account> {
 fn test_quote_swap_via_stake_jitosol_bsol() {
     STAKEDEX
         .quote_swap_via_stake(&QuoteParams {
-            in_amount: 1_000_000_000,
+            amount: 1_000_000_000,
             input_mint: jitosol::ID,
             output_mint: bsol::ID,
+            swap_mode: jupiter_amm_interface::SwapMode::ExactIn,
         })
         .unwrap();
 }
@@ -69,9 +70,10 @@ fn test_quote_swap_via_stake_jitosol_bsol() {
 fn test_quote_swap_via_stake_esol_bsol() {
     STAKEDEX
         .quote_swap_via_stake(&QuoteParams {
-            in_amount: 1_000_000_000, // 1_000_000_000_000
+            amount: 1_000_000_000, // 1_000_000_000_000
             input_mint: esol::ID,
             output_mint: bsol::ID,
+            swap_mode: jupiter_amm_interface::SwapMode::ExactIn,
         })
         .unwrap();
 }
@@ -80,9 +82,10 @@ fn test_quote_swap_via_stake_esol_bsol() {
 fn test_quote_swap_via_stake_unknown_token() {
     let unknown_token = Pubkey::new_unique();
     let res = STAKEDEX.quote_swap_via_stake(&QuoteParams {
-        in_amount: 1_000_000_000,
+        amount: 1_000_000_000,
         input_mint: unknown_token,
         output_mint: bsol::ID,
+        swap_mode: jupiter_amm_interface::SwapMode::ExactIn,
     });
     assert!(res.is_err());
 }
@@ -155,13 +158,13 @@ fn test_jsol_drain_vsa_edge_case() {
         .validator_list
         .validators
         .iter()
-        .max_by_key(|v| v.active_stake_lamports)
+        .max_by_key(|v| u64::from(v.active_stake_lamports))
         .unwrap();
     let max_withdraw_lamports = largest_active_stake_vsi.active_stake_lamports;
     let parts_after_fees = (STAKEDEX.jpool.stake_pool.stake_withdrawal_fee.denominator
         - STAKEDEX.jpool.stake_pool.stake_withdrawal_fee.numerator)
         as u128;
-    let max_withdraw_lamports_bef_fees = ((max_withdraw_lamports as u128)
+    let max_withdraw_lamports_bef_fees = (u128::from(u64::from(max_withdraw_lamports))
         * (STAKEDEX.jpool.stake_pool.stake_withdrawal_fee.denominator as u128)
         + parts_after_fees
         - 1)
@@ -173,15 +176,17 @@ fn test_jsol_drain_vsa_edge_case() {
         .unwrap();
     let max_possible_quote = STAKEDEX
         .quote_swap_via_stake(&QuoteParams {
-            in_amount: max_withdraw_jsol,
-            input_mint: jsol::ID,
-            output_mint: msol::ID,
+            amount: 100_000_000_000,
+            input_mint: stsol::ID,
+            output_mint: native_mint::ID,
+            swap_mode: jupiter_amm_interface::SwapMode::ExactIn,
         })
         .unwrap();
     let should_fail = STAKEDEX.quote_swap_via_stake(&QuoteParams {
-        in_amount: max_withdraw_jsol + 1,
+        amount: max_withdraw_jsol + 1,
         input_mint: jsol::ID,
         output_mint: msol::ID,
+        swap_mode: SwapMode::ExactIn,
     });
     assert!(should_fail.is_err());
     // try simulating max possible quote
@@ -250,9 +255,10 @@ pub fn sim_swap_via_stake(
 ) -> Response<RpcSimulateTransactionResult> {
     let quote = stakedex
         .quote_swap_via_stake(&QuoteParams {
-            in_amount,
+            amount: in_amount,
             input_mint,
             output_mint,
+            swap_mode: SwapMode::ExactIn,
         })
         .unwrap();
     // println!("{:?}", quote);
@@ -261,11 +267,12 @@ pub fn sim_swap_via_stake(
             &SwapParams {
                 jupiter_program_id: &jupiter_program::ID,
                 in_amount: quote.in_amount,
+                out_amount: 0,
                 destination_mint: output_mint,
                 source_mint: input_mint,
-                user_destination_token_account: dst_token_acc,
-                user_source_token_account: src_token_acc,
-                user_transfer_authority: signer,
+                destination_token_account: dst_token_acc,
+                source_token_account: src_token_acc,
+                token_transfer_authority: signer,
                 open_order_address: None,
                 quote_mint_to_referrer: None,
             },

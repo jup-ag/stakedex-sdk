@@ -1,9 +1,9 @@
 use anyhow::Result;
+use eversol_spl_stake_pool::error::StakePoolError;
 use solana_program::{instruction::Instruction, native_token};
-use spl_stake_pool::error::StakePoolError;
 use stakedex_deposit_sol_interface::{
     eversol_stake_pool_deposit_sol_ix, EversolStakePoolDepositSolIxArgs,
-    EversolStakePoolDepositSolKeys,
+    EversolStakePoolDepositSolKeys, EVERSOL_STAKE_POOL_DEPOSIT_SOL_IX_ACCOUNTS_LEN,
 };
 use stakedex_sdk_common::{eversol_program, eversol_stake_pool, DepositSol, DepositSolQuote};
 
@@ -68,5 +68,9 @@ impl DepositSol for EversolStakePoolStakedex {
             },
             EversolStakePoolDepositSolIxArgs {},
         )?)
+    }
+
+    fn accounts_len(&self) -> usize {
+        EVERSOL_STAKE_POOL_DEPOSIT_SOL_IX_ACCOUNTS_LEN
     }
 }

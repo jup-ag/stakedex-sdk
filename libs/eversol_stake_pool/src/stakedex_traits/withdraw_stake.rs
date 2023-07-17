@@ -1,12 +1,12 @@
 use anyhow::Result;
-use solana_program::{instruction::Instruction, stake, system_program, sysvar};
-use spl_stake_pool::MINIMUM_ACTIVE_STAKE;
+use eversol_spl_stake_pool::MINIMUM_ACTIVE_STAKE;
+use solana_program::{instruction::Instruction, pubkey::Pubkey, stake, system_program, sysvar};
 use stakedex_sdk_common::{
     eversol_program, eversol_stake_pool, WithdrawStakeBase, WithdrawStakeIter, WithdrawStakeQuote,
 };
 use stakedex_withdraw_stake_interface::{
     eversol_stake_pool_withdraw_stake_ix, EversolStakePoolWithdrawStakeIxArgs,
-    EversolStakePoolWithdrawStakeKeys,
+    EversolStakePoolWithdrawStakeKeys, EVERSOL_STAKE_POOL_WITHDRAW_STAKE_IX_ACCOUNTS_LEN,
 };
 
 use crate::EversolStakePoolStakedex;
@@ -121,5 +121,13 @@ impl WithdrawStakeBase for EversolStakePoolStakedex {
             },
             EversolStakePoolWithdrawStakeIxArgs {},
         )?)
+    }
+
+    fn accounts_len(&self) -> usize {
+        EVERSOL_STAKE_POOL_WITHDRAW_STAKE_IX_ACCOUNTS_LEN
+    }
+
+    fn underlying_liquidity(&self) -> Option<&Pubkey> {
+        Some(&eversol_stake_pool::ID)
     }
 }

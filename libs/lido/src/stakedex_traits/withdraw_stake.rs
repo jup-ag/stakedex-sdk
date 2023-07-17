@@ -5,14 +5,17 @@ use lido::{
     MINIMUM_STAKE_ACCOUNT_BALANCE,
 };
 use solana_program::{
-    instruction::Instruction, native_token::LAMPORTS_PER_SOL, stake, system_program, sysvar,
+    instruction::Instruction, native_token::LAMPORTS_PER_SOL, pubkey::Pubkey, stake,
+    system_program, sysvar,
 };
+
 use stakedex_sdk_common::{
     lido_program, lido_state, WithdrawStakeBase, WithdrawStakeIter, WithdrawStakeQuote,
     STAKE_ACCOUNT_RENT_EXEMPT_LAMPORTS,
 };
 use stakedex_withdraw_stake_interface::{
     lido_withdraw_stake_ix, LidoWithdrawStakeIxArgs, LidoWithdrawStakeKeys,
+    LIDO_WITHDRAW_STAKE_IX_ACCOUNTS_LEN,
 };
 use std::ops::Add;
 
@@ -162,5 +165,13 @@ impl WithdrawStakeBase for LidoStakedex {
             },
             LidoWithdrawStakeIxArgs {},
         )?)
+    }
+
+    fn accounts_len(&self) -> usize {
+        LIDO_WITHDRAW_STAKE_IX_ACCOUNTS_LEN
+    }
+
+    fn underlying_liquidity(&self) -> Option<&Pubkey> {
+        Some(&lido_state::ID)
     }
 }

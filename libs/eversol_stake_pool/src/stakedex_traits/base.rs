@@ -1,7 +1,7 @@
 use anyhow::Result;
 use solana_program::{clock::Clock, pubkey::Pubkey, sysvar};
 use stakedex_sdk_common::{
-    account_missing_err, esol, eversol_stake_pool,
+    account_missing_err, esol, eversol_program, eversol_stake_pool,
     jupiter_stakedex_interface::{AccountMap, KeyedAccount},
     BaseStakePoolAmm, InitFromKeyedAccount,
 };
@@ -20,6 +20,10 @@ impl InitFromKeyedAccount for EversolStakePoolStakedex {
 }
 
 impl BaseStakePoolAmm for EversolStakePoolStakedex {
+    fn program_id(&self) -> Pubkey {
+        eversol_program::ID
+    }
+
     fn stake_pool_label(&self) -> &'static str {
         EVERSOL_STAKE_POOL_LABEL
     }

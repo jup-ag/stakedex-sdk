@@ -3,7 +3,7 @@ use solana_program::pubkey::Pubkey;
 use stakedex_sdk_common::{
     account_missing_err,
     jupiter_stakedex_interface::{AccountMap, KeyedAccount},
-    unstake_it_pool, BaseStakePoolAmm, InitFromKeyedAccount,
+    unstake_it_pool, unstake_it_program, BaseStakePoolAmm, InitFromKeyedAccount,
 };
 
 use crate::{
@@ -17,6 +17,10 @@ impl InitFromKeyedAccount for UnstakeItStakedex {
 }
 
 impl BaseStakePoolAmm for UnstakeItStakedex {
+    fn program_id(&self) -> Pubkey {
+        unstake_it_program::ID
+    }
+
     fn stake_pool_label(&self) -> &'static str {
         UNSTAKE_IT_LABEL
     }
