@@ -29,3 +29,4 @@ bincode = { workspace = true }
 
 [dev-dependencies]
 solana-client = { workspace = true }
+lazy_static = { workspace = true }
