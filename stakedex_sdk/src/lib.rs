@@ -673,11 +673,6 @@ impl Stakedex {
             }
         }
 
-        println!(
-            "StakeDex amms: {:?}",
-            amms.iter().map(|amm| amm.label()).collect::<Vec<_>>()
-        );
-
         amms
     }
 }
