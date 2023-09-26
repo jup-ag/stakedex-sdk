@@ -11,7 +11,9 @@ test-utils = []
 [dependencies]
 anyhow = { workspace = true }
 jupiter-amm-interface = { workspace = true }
+solana-account-decoder = "^1.9"
 solana-sdk = { workspace = true }
+spl-associated-token-account = "1.1.1"
 spl-token = { workspace = true }
 stakedex_eversol_stake_pool = { workspace = true }
 stakedex_interface = { workspace = true }
