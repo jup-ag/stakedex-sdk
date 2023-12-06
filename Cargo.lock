@@ -1352,7 +1352,7 @@ dependencies = [
  "serde",
  "serde_derive",
  "solana-program",
- "spl-associated-token-account 2.1.0",
+ "spl-associated-token-account 2.2.0",
  "spl-math 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "spl-token 4.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "spl-token-2022 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -2111,9 +2111,9 @@ dependencies = [
 
 [[package]]
 name = "mpl-token-metadata"
-version = "3.0.1"
+version = "3.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "651388b8ccae4805f240ebd495172eb44ea10153e018623b628df7034e042a96"
+checksum = "ba8ee05284d79b367ae8966d558e1a305a781fc80c9df51f37775169117ba64f"
 dependencies = [
  "borsh 0.9.3",
  "num-derive 0.3.3",
@@ -4113,9 +4113,9 @@ dependencies = [
 
 [[package]]
 name = "spl-associated-token-account"
-version = "2.1.0"
+version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "477696277857a7b2c17a6f7f3095e835850ad1c0f11637b5bd2693ca777d8546"
+checksum = "385e31c29981488f2820b2022d8e731aae3b02e6e18e2fd854e4c9a94dc44fc3"
 dependencies = [
  "assert_matches",
  "borsh 0.10.3",
@@ -4123,7 +4123,7 @@ dependencies = [
  "num-traits",
  "solana-program",
  "spl-token 4.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "spl-token-2022 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "spl-token-2022 0.9.0",
  "thiserror",
 ]
 
@@ -4135,7 +4135,7 @@ checksum = "cce5d563b58ef1bb2cdbbfe0dfb9ffdc24903b10ae6a4df2d8f425ece375033f"
 dependencies = [
  "bytemuck",
  "solana-program",
- "spl-discriminator-derive 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "spl-discriminator-derive 0.1.1",
 ]
 
 [[package]]
@@ -4145,18 +4145,7 @@ source = "git+https://github.com/solana-labs/solana-program-library.git?rev=a399
 dependencies = [
  "bytemuck",
  "solana-program",
- "spl-discriminator-derive 0.1.0 (git+https://github.com/solana-labs/solana-program-library.git?rev=a3996814cb44eab2834f72113b742c875ac7b1b9)",
-]
-
-[[package]]
-name = "spl-discriminator-derive"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b4fa8f409b5c5e0ac571df17c981ae1424b204743daa4428430627d38717caf5"
-dependencies = [
- "quote 1.0.33",
- "spl-discriminator-syn 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "syn 2.0.33",
+ "spl-discriminator-derive 0.1.0",
 ]
 
 [[package]]
@@ -4165,15 +4154,25 @@ version = "0.1.0"
 source = "git+https://github.com/solana-labs/solana-program-library.git?rev=a3996814cb44eab2834f72113b742c875ac7b1b9#a3996814cb44eab2834f72113b742c875ac7b1b9"
 dependencies = [
  "quote 1.0.33",
- "spl-discriminator-syn 0.1.0 (git+https://github.com/solana-labs/solana-program-library.git?rev=a3996814cb44eab2834f72113b742c875ac7b1b9)",
+ "spl-discriminator-syn 0.1.0",
+ "syn 2.0.33",
+]
+
+[[package]]
+name = "spl-discriminator-derive"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fadbefec4f3c678215ca72bd71862697bb06b41fd77c0088902dd3203354387b"
+dependencies = [
+ "quote 1.0.33",
+ "spl-discriminator-syn 0.1.1",
  "syn 2.0.33",
 ]
 
 [[package]]
 name = "spl-discriminator-syn"
 version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "21968d7da2f0a624c509f24580c3fee70b364a6886d90709e679e64f572eca2f"
+source = "git+https://github.com/solana-labs/solana-program-library.git?rev=a3996814cb44eab2834f72113b742c875ac7b1b9#a3996814cb44eab2834f72113b742c875ac7b1b9"
 dependencies = [
  "proc-macro2 1.0.67",
  "quote 1.0.33",
@@ -4184,12 +4183,13 @@ dependencies = [
 
 [[package]]
 name = "spl-discriminator-syn"
-version = "0.1.0"
-source = "git+https://github.com/solana-labs/solana-program-library.git?rev=a3996814cb44eab2834f72113b742c875ac7b1b9#a3996814cb44eab2834f72113b742c875ac7b1b9"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0e5f2044ca42c8938d54d1255ce599c79a1ffd86b677dfab695caa20f9ffc3f2"
 dependencies = [
  "proc-macro2 1.0.67",
  "quote 1.0.33",
- "solana-program",
+ "sha2 0.10.7",
  "syn 2.0.33",
  "thiserror",
 ]
@@ -4296,7 +4296,7 @@ dependencies = [
  "num-derive 0.4.0",
  "num-traits",
  "solana-program",
- "spl-program-error-derive 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "spl-program-error-derive 0.3.1",
  "thiserror",
 ]
 
@@ -4308,20 +4308,8 @@ dependencies = [
  "num-derive 0.4.0",
  "num-traits",
  "solana-program",
- "spl-program-error-derive 0.3.0 (git+https://github.com/solana-labs/solana-program-library.git?rev=a3996814cb44eab2834f72113b742c875ac7b1b9)",
+ "spl-program-error-derive 0.3.0",
  "thiserror",
-]
-
-[[package]]
-name = "spl-program-error-derive"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a6709c5f41fefb730f2bd8464da741079cf0efd1d0f522e041224b98d431b9b3"
-dependencies = [
- "proc-macro2 1.0.67",
- "quote 1.0.33",
- "solana-program",
- "syn 2.0.33",
 ]
 
 [[package]]
@@ -4332,6 +4320,18 @@ dependencies = [
  "proc-macro2 1.0.67",
  "quote 1.0.33",
  "solana-program",
+ "syn 2.0.33",
+]
+
+[[package]]
+name = "spl-program-error-derive"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ab5269c8e868da17b6552ef35a51355a017bd8e0eae269c201fef830d35fa52c"
+dependencies = [
+ "proc-macro2 1.0.67",
+ "quote 1.0.33",
+ "sha2 0.10.7",
  "syn 2.0.33",
 ]
 
@@ -4380,6 +4380,20 @@ dependencies = [
  "spl-pod 0.1.0 (git+https://github.com/solana-labs/solana-program-library.git?rev=a3996814cb44eab2834f72113b742c875ac7b1b9)",
  "spl-program-error 0.3.0 (git+https://github.com/solana-labs/solana-program-library.git?rev=a3996814cb44eab2834f72113b742c875ac7b1b9)",
  "spl-type-length-value 0.3.0 (git+https://github.com/solana-labs/solana-program-library.git?rev=a3996814cb44eab2834f72113b742c875ac7b1b9)",
+]
+
+[[package]]
+name = "spl-tlv-account-resolution"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "062e148d3eab7b165582757453632ffeef490c02c86a48bfdb4988f63eefb3b9"
+dependencies = [
+ "bytemuck",
+ "solana-program",
+ "spl-discriminator 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "spl-pod 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "spl-program-error 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "spl-type-length-value 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -4488,6 +4502,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "spl-token-2022"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e4abf34a65ba420584a0c35f3903f8d727d1f13ababbdc3f714c6b065a686e86"
+dependencies = [
+ "arrayref",
+ "bytemuck",
+ "num-derive 0.4.0",
+ "num-traits",
+ "num_enum 0.7.0",
+ "solana-program",
+ "solana-zk-token-sdk",
+ "spl-memo 4.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "spl-pod 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "spl-token 4.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "spl-token-metadata-interface 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "spl-transfer-hook-interface 0.3.0",
+ "spl-type-length-value 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "thiserror",
+]
+
+[[package]]
 name = "spl-token-metadata-interface"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4543,6 +4579,22 @@ dependencies = [
  "spl-program-error 0.3.0 (git+https://github.com/solana-labs/solana-program-library.git?rev=a3996814cb44eab2834f72113b742c875ac7b1b9)",
  "spl-tlv-account-resolution 0.3.0 (git+https://github.com/solana-labs/solana-program-library.git?rev=a3996814cb44eab2834f72113b742c875ac7b1b9)",
  "spl-type-length-value 0.3.0 (git+https://github.com/solana-labs/solana-program-library.git?rev=a3996814cb44eab2834f72113b742c875ac7b1b9)",
+]
+
+[[package]]
+name = "spl-transfer-hook-interface"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "051d31803f873cabe71aec3c1b849f35248beae5d19a347d93a5c9cccc5d5a9b"
+dependencies = [
+ "arrayref",
+ "bytemuck",
+ "solana-program",
+ "spl-discriminator 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "spl-pod 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "spl-program-error 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "spl-tlv-account-resolution 0.4.0",
+ "spl-type-length-value 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -4619,6 +4671,7 @@ dependencies = [
  "bincode",
  "borsh 0.10.3",
  "lido",
+ "solana-client",
  "solana-program",
  "spl-token 3.5.0",
  "stakedex_deposit_sol_interface",

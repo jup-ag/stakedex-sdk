@@ -3,9 +3,7 @@ use std::collections::HashMap;
 use anyhow::{anyhow, Result};
 use itertools::Itertools;
 use jupiter_amm_interface::{AccountMap, Amm, KeyedAccount, Quote, QuoteParams, SwapParams};
-use solana_sdk::{
-    account::Account, clock::Clock, instruction::Instruction, pubkey::Pubkey, system_program,
-};
+use solana_sdk::{account::Account, instruction::Instruction, pubkey::Pubkey, system_program};
 use spl_token::native_mint;
 use stakedex_eversol_stake_pool::EversolStakePoolStakedex;
 pub use stakedex_interface::ID as stakedex_program_id;

@@ -17,7 +17,7 @@ use crate::{
     find_stake_pool_pair_amm_key,
     jupiter_stakedex_interface::{Swap, STAKEDEX_ACCOUNT_META},
     DepositStake, DepositStakeInfo, DepositStakeQuote, SwapViaStakeQuoteErr, WithdrawStake,
-    WithdrawStakeQuote, SWAP_VIA_STAKE_DST_TOKEN_MINT_ACCOUNT_INDEX,
+    WithdrawStakeQuote, WithdrawStakeQuoteErr, SWAP_VIA_STAKE_DST_TOKEN_MINT_ACCOUNT_INDEX,
     SWAP_VIA_STAKE_SRC_TOKEN_MINT_ACCOUNT_INDEX, TEMPORARY_JUP_AMM_LABEL,
 };
 
@@ -26,8 +26,11 @@ pub fn first_avail_quote<W: WithdrawStake + ?Sized, D: DepositStake + ?Sized>(
     withdraw_from: &W,
     deposit_to: &D,
 ) -> Result<(WithdrawStakeQuote, DepositStakeQuote), SwapViaStakeQuoteErr> {
-    let mut withdraw_quote_iter = withdraw_from.withdraw_stake_quote_iter(withdraw_amount);
-    while let Some(wsq) = withdraw_quote_iter.next(withdraw_from)? {
+    if !withdraw_from.can_accept_stake_withdrawals() {
+        return Err(WithdrawStakeQuoteErr::CannotAcceptStakeWithdrawals.into());
+    }
+    let withdraw_quote_iter = withdraw_from.withdraw_stake_quote_iter_dyn(withdraw_amount);
+    for wsq in withdraw_quote_iter {
         if wsq.is_zero_out() {
             continue;
         }
@@ -302,9 +305,9 @@ where
     pub fn new(p1: P1, p2: P2) -> Self {
         let underlying_liquidities = prepare_underlying_liquidities(&[
             DepositStake::underlying_liquidity(&p1),
-            WithdrawStake::underlying_liquidity(&p1),
+            <dyn WithdrawStake>::underlying_liquidity(&p1),
             DepositStake::underlying_liquidity(&p2),
-            WithdrawStake::underlying_liquidity(&p2),
+            <dyn WithdrawStake>::underlying_liquidity(&p2),
         ]);
         Self {
             p1,
@@ -411,7 +414,7 @@ where
 
     fn get_accounts_len(&self) -> usize {
         // Pick a single direction
-        1 + WithdrawStake::accounts_len(&self.p1) + DepositStake::accounts_len(&self.p2) + 1
+        1 + <dyn WithdrawStake>::accounts_len(&self.p1) + DepositStake::accounts_len(&self.p2) + 1
     }
 
     fn underlying_liquidities(&self) -> Option<HashSet<Pubkey>> {

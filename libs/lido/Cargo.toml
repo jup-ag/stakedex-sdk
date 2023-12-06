@@ -19,4 +19,4 @@ stakedex_withdraw_stake_interface = { workspace = true }
 stakedex_sdk_common = { workspace = true }
 
 [dev-dependencies]
-# solana-client = { workspace = true }
+solana-client = { workspace = true }
