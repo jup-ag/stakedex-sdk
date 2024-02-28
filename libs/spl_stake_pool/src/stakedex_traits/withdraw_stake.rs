@@ -3,8 +3,8 @@ use solana_program::{instruction::Instruction, pubkey::Pubkey, stake, system_pro
 use spl_stake_pool::{find_stake_program_address, MINIMUM_ACTIVE_STAKE};
 use stakedex_sdk_common::{WithdrawStakeBase, WithdrawStakeIter, WithdrawStakeQuote};
 use stakedex_withdraw_stake_interface::{
-    spl_stake_pool_withdraw_stake_ix, SplStakePoolWithdrawStakeIxArgs,
-    SplStakePoolWithdrawStakeKeys, SPL_STAKE_POOL_WITHDRAW_STAKE_IX_ACCOUNTS_LEN,
+    spl_stake_pool_withdraw_stake_ix, SplStakePoolWithdrawStakeKeys,
+    SPL_STAKE_POOL_WITHDRAW_STAKE_IX_ACCOUNTS_LEN,
 };
 
 use crate::SplStakePoolStakedex;
@@ -105,7 +105,7 @@ impl WithdrawStakeBase for SplStakePoolStakedex {
 
     fn virtual_ix(&self, quote: &WithdrawStakeQuote) -> Result<Instruction> {
         let withdraw_stake_stake_to_split = find_stake_program_address(
-            &spl_stake_pool::ID,
+            &self.stake_pool_program,
             &quote.voter,
             &self.stake_pool_addr,
             None,
@@ -113,10 +113,10 @@ impl WithdrawStakeBase for SplStakePoolStakedex {
         .0;
         Ok(spl_stake_pool_withdraw_stake_ix(
             SplStakePoolWithdrawStakeKeys {
-                spl_stake_pool_program: spl_stake_pool::ID,
+                spl_stake_pool_program: self.stake_pool_program,
                 withdraw_stake_spl_stake_pool: self.stake_pool_addr,
                 withdraw_stake_validator_list: self.stake_pool.validator_list,
-                withdraw_stake_withdraw_authority: self.withdraw_authority_addr,
+                withdraw_stake_withdraw_authority: self.withdraw_authority_addr(),
                 withdraw_stake_manager_fee: self.stake_pool.manager_fee_account,
                 withdraw_stake_stake_to_split,
                 clock: sysvar::clock::ID,
@@ -124,7 +124,6 @@ impl WithdrawStakeBase for SplStakePoolStakedex {
                 stake_program: stake::program::ID,
                 system_program: system_program::ID,
             },
-            SplStakePoolWithdrawStakeIxArgs {},
         )?)
     }
 

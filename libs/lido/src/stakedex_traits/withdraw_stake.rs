@@ -14,8 +14,7 @@ use stakedex_sdk_common::{
     STAKE_ACCOUNT_RENT_EXEMPT_LAMPORTS,
 };
 use stakedex_withdraw_stake_interface::{
-    lido_withdraw_stake_ix, LidoWithdrawStakeIxArgs, LidoWithdrawStakeKeys,
-    LIDO_WITHDRAW_STAKE_IX_ACCOUNTS_LEN,
+    lido_withdraw_stake_ix, LidoWithdrawStakeKeys, LIDO_WITHDRAW_STAKE_IX_ACCOUNTS_LEN,
 };
 use std::ops::Add;
 
@@ -52,7 +51,8 @@ fn get_withdraw_stake_quote_for_validator_copied(
         .map_err(|_| anyhow!("no stSOL minted"))?;
     // TODO: this is = accounts.source_stake_account.lamports()
     // rn because there's only 1 active stake account
-    // per validator, might change in the future
+    // per validator, might change in the future.
+    // Nvm, lido is sunsetting lol
     let source_balance = validator.effective_stake_balance;
     let max_withdraw_amount = (source_balance
         * Rational {
@@ -141,30 +141,25 @@ impl WithdrawStakeBase for LidoStakedex {
             .iter()
             .find(|v| v.vote_account_address == quote.voter)
             .ok_or_else(|| anyhow!("could not find validator"))?;
-        Ok(lido_withdraw_stake_ix(
-            LidoWithdrawStakeKeys {
-                lido_program: lido_program::ID,
-                withdraw_stake_solido: lido_state::ID,
-                withdraw_stake_stake_authority: self
-                    .lido_state
-                    .get_stake_authority(&lido_program::ID, &lido_state::ID)?,
-                withdraw_stake_stake_to_split: validator
-                    .find_stake_account_address(
-                        &lido_program::ID,
-                        &lido_state::ID,
-                        validator.stake_seeds.begin,
-                        StakeType::Stake,
-                    )
-                    .0,
-                withdraw_stake_voter: quote.voter,
-                withdraw_stake_validator_list: self.lido_state.validator_list,
-                clock: sysvar::clock::ID,
-                system_program: system_program::ID,
-                stake_program: stake::program::ID,
-                token_program: spl_token::ID,
-            },
-            LidoWithdrawStakeIxArgs {},
-        )?)
+        Ok(lido_withdraw_stake_ix(LidoWithdrawStakeKeys {
+            lido_program: lido_program::ID,
+            withdraw_stake_solido: lido_state::ID,
+            withdraw_stake_stake_authority: lido_program::STAKE_AUTHORITY_ID,
+            withdraw_stake_stake_to_split: validator
+                .find_stake_account_address(
+                    &lido_program::ID,
+                    &lido_state::ID,
+                    validator.stake_seeds.begin,
+                    StakeType::Stake,
+                )
+                .0,
+            withdraw_stake_voter: quote.voter,
+            withdraw_stake_validator_list: self.lido_state.validator_list,
+            clock: sysvar::clock::ID,
+            system_program: system_program::ID,
+            stake_program: stake::program::ID,
+            token_program: spl_token::ID,
+        })?)
     }
 
     fn accounts_len(&self) -> usize {

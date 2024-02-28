@@ -58,10 +58,10 @@ pub fn quote_pool_pair<W: WithdrawStake + ?Sized, D: DepositStake + ?Sized>(
     // - deposit_to's deposit stake fees (output mint)
     // - stakedex's global fees (output mint)
     let mut total_fees = aft_global_fees.fee + deposit_quote.fee_amount;
-    // withdraw fees pct = withdraw_fees_in_token / quote_params.in_amount
+    // withdraw fees pct = withdraw_fees_in_token / quote_params.amount
     // approx withdraw fees in terms of out tokens
     // = before_fees * (withdraw fees pct / (1.0 - withdraw fees pct))
-    // = before_fees * withdraw_fees_in_token / (quote_params.in_amount - withdraw_fees_in_token)
+    // = before_fees * withdraw_fees_in_token / (quote_params.amount - withdraw_fees_in_token)
     let out_before_fees = deposit_quote.tokens_out + deposit_quote.fee_amount;
     let denom = quote_params
         .amount
@@ -103,7 +103,7 @@ pub fn get_account_metas<W: WithdrawStake + ?Sized, D: DepositStake + ?Sized>(
     .0;
     let deposit_stake_info = DepositStakeInfo { addr: bridge_stake };
     let mut metas = Vec::from(<[AccountMeta; SWAP_VIA_STAKE_IX_ACCOUNTS_LEN]>::from(
-        &SwapViaStakeKeys {
+        SwapViaStakeKeys {
             user: swap_params.token_transfer_authority,
             src_token_from: swap_params.source_token_account,
             src_token_mint: swap_params.source_mint,
@@ -131,12 +131,8 @@ pub fn get_account_metas<W: WithdrawStake + ?Sized, D: DepositStake + ?Sized>(
 fn prepare_underlying_liquidities(
     underlying_liquidities: &[Option<&Pubkey>],
 ) -> Option<HashSet<Pubkey>> {
-    let uls = HashSet::from_iter(
-        underlying_liquidities
-            .into_iter()
-            .filter_map(|ul| ul.cloned()),
-    );
-    if uls.len() > 0 {
+    let uls = HashSet::from_iter(underlying_liquidities.iter().filter_map(|ul| ul.cloned()));
+    if !uls.is_empty() {
         Some(uls)
     } else {
         None

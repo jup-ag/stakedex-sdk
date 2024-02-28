@@ -1,7 +1,7 @@
 use anyhow::Result;
 use solana_program::{instruction::Instruction, pubkey::Pubkey, stake, system_program, sysvar};
 use stakedex_deposit_stake_interface::{
-    unstake_it_deposit_stake_ix, UnstakeItDepositStakeIxArgs, UnstakeItDepositStakeKeys,
+    unstake_it_deposit_stake_ix, UnstakeItDepositStakeKeys,
     UNSTAKE_IT_DEPOSIT_STAKE_IX_ACCOUNTS_LEN,
 };
 use stakedex_sdk_common::{
@@ -9,11 +9,9 @@ use stakedex_sdk_common::{
     WithdrawStakeQuote, ZERO_DATA_ACC_RENT_EXEMPT_LAMPORTS,
 };
 use std::cmp::Ordering;
+use unstake_lib::{ApplyFeeArgs, PoolBalance, UnstakeFeeCalc};
 
-use crate::{
-    apply_fee, find_fee, find_pool_sol_reserves, find_protocol_fee, find_stake_account_record,
-    UnstakeItStakedex,
-};
+use crate::{find_stake_account_record, UnstakeItStakedex};
 
 impl DepositStake for UnstakeItStakedex {
     fn can_accept_stake_deposits(&self) -> bool {
@@ -24,12 +22,13 @@ impl DepositStake for UnstakeItStakedex {
         &self,
         withdraw_stake_quote: WithdrawStakeQuote,
     ) -> DepositStakeQuote {
-        let fee_amount = match apply_fee(
-            &self.fee.fee,
-            self.pool.incoming_stake,
-            self.sol_reserves_lamports,
-            withdraw_stake_quote.lamports_out,
-        ) {
+        let fee_amount = match self.fee.fee.apply(ApplyFeeArgs {
+            pool_balance: PoolBalance {
+                pool_incoming_stake: self.pool.incoming_stake,
+                sol_reserves_lamports: self.sol_reserves_lamports,
+            },
+            stake_account_lamports: withdraw_stake_quote.lamports_out,
+        }) {
             Some(f) => f,
             None => return DepositStakeQuote::default(),
         };
@@ -57,23 +56,19 @@ impl DepositStake for UnstakeItStakedex {
         _quote: &DepositStakeQuote,
         deposit_stake_info: &DepositStakeInfo,
     ) -> Result<Instruction> {
-        Ok(unstake_it_deposit_stake_ix(
-            UnstakeItDepositStakeKeys {
-                unstakeit_program: unstake_it_program::ID,
-                deposit_stake_unstake_pool: unstake_it_pool::ID,
-                deposit_stake_pool_sol_reserves: find_pool_sol_reserves().0,
-                deposit_stake_stake_acc_record: find_stake_account_record(&deposit_stake_info.addr)
-                    .0,
-                deposit_stake_unstake_fee: find_fee().0,
-                deposit_stake_protocol_fee: find_protocol_fee().0,
-                deposit_stake_protocol_fee_dest: self.protocol_fee.destination,
-                clock: sysvar::clock::ID,
-                token_program: spl_token::ID,
-                stake_program: stake::program::ID,
-                system_program: system_program::ID,
-            },
-            UnstakeItDepositStakeIxArgs {},
-        )?)
+        Ok(unstake_it_deposit_stake_ix(UnstakeItDepositStakeKeys {
+            unstakeit_program: unstake_it_program::ID,
+            deposit_stake_unstake_pool: unstake_it_pool::ID,
+            deposit_stake_pool_sol_reserves: unstake_it_program::SOL_RESERVES_ID,
+            deposit_stake_stake_acc_record: find_stake_account_record(&deposit_stake_info.addr).0,
+            deposit_stake_unstake_fee: unstake_it_program::FEE_ID,
+            deposit_stake_protocol_fee: unstake_it_program::PROTOCOL_FEE_ID,
+            deposit_stake_protocol_fee_dest: self.protocol_fee.destination,
+            clock: sysvar::clock::ID,
+            token_program: spl_token::ID,
+            stake_program: stake::program::ID,
+            system_program: system_program::ID,
+        })?)
     }
 
     fn underlying_liquidity(&self) -> Option<&Pubkey> {

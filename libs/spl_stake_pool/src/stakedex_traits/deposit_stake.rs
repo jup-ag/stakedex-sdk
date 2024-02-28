@@ -4,7 +4,7 @@ use spl_stake_pool::{
     find_deposit_authority_program_address, find_stake_program_address, state::StakeStatus,
 };
 use stakedex_deposit_stake_interface::{
-    spl_stake_pool_deposit_stake_ix, SplStakePoolDepositStakeIxArgs, SplStakePoolDepositStakeKeys,
+    spl_stake_pool_deposit_stake_ix, SplStakePoolDepositStakeKeys,
     SPL_STAKE_POOL_DEPOSIT_STAKE_IX_ACCOUNTS_LEN,
 };
 use stakedex_sdk_common::{DepositStake, DepositStakeInfo, DepositStakeQuote, WithdrawStakeQuote};
@@ -14,7 +14,11 @@ use crate::SplStakePoolStakedex;
 impl DepositStake for SplStakePoolStakedex {
     fn can_accept_stake_deposits(&self) -> bool {
         if self.stake_pool.stake_deposit_authority
-            != find_deposit_authority_program_address(&spl_stake_pool::ID, &self.stake_pool_addr).0
+            != find_deposit_authority_program_address(
+                &self.stake_pool_program,
+                &self.stake_pool_addr,
+            )
+            .0
         {
             return false;
         }
@@ -22,7 +26,7 @@ impl DepositStake for SplStakePoolStakedex {
     }
 
     // TODO: maybe refactor to same style as eversol
-    // (_copy() function that returns Result and can copy pasta from on-chain src directly)
+    // (_copied() function that returns Result and can copy pasta from on-chain src directly)
     fn get_deposit_stake_quote_unchecked(
         &self,
         withdraw_stake_quote: WithdrawStakeQuote,
@@ -36,7 +40,7 @@ impl DepositStake for SplStakePoolStakedex {
             Some(r) => r,
             None => return DepositStakeQuote::default(),
         };
-        if validator_list_entry.status != StakeStatus::Active {
+        if validator_list_entry.status != StakeStatus::Active.into() {
             return DepositStakeQuote::default();
         }
         // Reference: https://github.com/solana-labs/solana-program-library/blob/stake-pool-v0.6.4/stake-pool/program/src/processor.rs#L1971
@@ -115,7 +119,7 @@ impl DepositStake for SplStakePoolStakedex {
         _deposit_stake_info: &DepositStakeInfo,
     ) -> Result<Instruction> {
         let deposit_stake_validator_stake = find_stake_program_address(
-            &spl_stake_pool::ID,
+            &self.stake_pool_program,
             &quote.voter,
             &self.stake_pool_addr,
             None,
@@ -123,11 +127,11 @@ impl DepositStake for SplStakePoolStakedex {
         .0;
         Ok(spl_stake_pool_deposit_stake_ix(
             SplStakePoolDepositStakeKeys {
-                spl_stake_pool_program: spl_stake_pool::ID,
+                spl_stake_pool_program: self.stake_pool_program,
                 deposit_stake_spl_stake_pool: self.stake_pool_addr,
                 deposit_stake_validator_list: self.stake_pool.validator_list,
                 deposit_stake_deposit_authority: self.stake_pool.stake_deposit_authority,
-                deposit_stake_withdraw_authority: self.withdraw_authority_addr,
+                deposit_stake_withdraw_authority: self.withdraw_authority_addr(),
                 deposit_stake_reserve_stake: self.stake_pool.reserve_stake,
                 deposit_stake_manager_fee: self.stake_pool.manager_fee_account,
                 deposit_stake_validator_stake,
@@ -136,7 +140,6 @@ impl DepositStake for SplStakePoolStakedex {
                 token_program: spl_token::ID,
                 stake_program: stake::program::ID,
             },
-            SplStakePoolDepositStakeIxArgs {},
         )?)
     }
 

@@ -61,15 +61,14 @@
         {
           "name": "systemProgram",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "desc": "System program. The deposit SOL accounts slice follows."
         }
       ],
       "args": [
         {
-          "name": "stakeWrappedSolArgs",
-          "type": {
-            "defined": "StakeWrappedSolArgs"
-          }
+          "name": "amount",
+          "type": "u64"
         }
       ],
       "discriminant": {
@@ -84,7 +83,7 @@
           "name": "user",
           "isMut": true,
           "isSigner": true,
-          "desc": "The authority of src_token_from. Needs to be mutable to support marinde deposit stake."
+          "desc": "The authority of src_token_from. Needs to be mutable to support marinade deposit stake."
         },
         {
           "name": "srcTokenFrom",
@@ -120,12 +119,12 @@
           "name": "destTokenMint",
           "isMut": true,
           "isSigner": false,
-          "desc": "Output token mint. If this is wrapped SOL, the account can be set to read-only"
+          "desc": "Output token mint. If this is wrapped SOL, the account can be set to read-only. The withdraw stake and deposit stake accounts slices follow."
         }
       ],
       "args": [
         {
-          "name": "swapViaStakeArgs",
+          "name": "args",
           "type": {
             "defined": "SwapViaStakeArgs"
           }
@@ -280,7 +279,7 @@
           "name": "destTokenMint",
           "isMut": true,
           "isSigner": false,
-          "desc": "Output token mint. If this is wrapped SOL, the account can be set to read-only"
+          "desc": "Output token mint. If this is wrapped SOL, the account can be set to read-only. The deposit stake accounts slice follows."
         }
       ],
       "args": [],
@@ -288,21 +287,253 @@
         "type": "u8",
         "value": 5
       }
+    },
+    {
+      "name": "PrefundWithdrawStake",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true,
+          "desc": "The withdraw authority of stake_account. Needs to be mutable and system account to receive slumlord flash loan."
+        },
+        {
+          "name": "srcTokenFrom",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "The token account to burn src tokens from in order to withdraw stake"
+        },
+        {
+          "name": "bridgeStake",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "The bridge stake account thats withdrawn and given to the user. PDA. seeds = ['bridge_stake', user.pubkey, SwapArgs.bridge_stake_seed]. Might be long-lived, make sure the seed is not already in use"
+        },
+        {
+          "name": "srcTokenMint",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "Input LST token mint"
+        },
+        {
+          "name": "prefunder",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "The system account PDA that contains enough SOL to prefund 2 stake accounts for withdrawal. Someone must send SOL to here to initialize it. Seeds = ['prefunder']"
+        },
+        {
+          "name": "slumdogStake",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "The slumdog stake account is split from bridge_stake upon stake withdraw and instant unstaked to repay slumlord's flash loan. create_with_seed(bridge_stake.pubkey, 'slumdog', stake_program). Might be long-lived, but should be not in use as long as bridge_stake is not in use"
+        },
+        {
+          "name": "unstakeitProgram",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "Sanctum unstake program. unpXTU2Ndrc7WWNyEhQWe4udTzSibLPi25SXv2xbCHQ"
+        },
+        {
+          "name": "unstakePool",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "Sanctum unstake pool. FypPtwbY3FUfzJUtXHSyVRokVKG2jKtH29FmK4ebxRSd"
+        },
+        {
+          "name": "poolSolReserves",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "Sanctum unstake pool SOL reserves. 3rBnnH9TTgd3xwu48rnzGsaQkSr1hR64nY71DrDt6VrQ"
+        },
+        {
+          "name": "unstakeFee",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "Sanctum unstake pool Fee account. 5Pcu8WeQa3VbBz2vdBT49Rj4gbS4hsnfzuL1LmuRaKFY"
+        },
+        {
+          "name": "slumdogStakeAccRecord",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "Sanctum unstake pool stake account record for slumdog stake. PDA of sanctum unstake program. Seeds = [unstakePool.pubkey, slumdogStake.pubkey]."
+        },
+        {
+          "name": "unstakeProtocolFee",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "Sanctum unstake pool protocol fee account. 2hN9UhvRFVfPYKL6rZJ5YiLEPCLTpN755pgwDJHWgFbU"
+        },
+        {
+          "name": "unstakeProtocolFeeDest",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "Sanctum unstake pool protocol fee destination. unstakeProtocolFee.destination"
+        },
+        {
+          "name": "clock",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "sysvar clock"
+        },
+        {
+          "name": "stakeProgram",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "stake program"
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "System program. The withdraw stake accounts slices follow."
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "SwapViaStakeArgs"
+          }
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 6
+      }
+    },
+    {
+      "name": "PrefundSwapViaStake",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true,
+          "desc": "The authority of src_token_from, mutable system account. Prefunds the rent for the stake accounts, amount is refunded via instant unstake."
+        },
+        {
+          "name": "srcTokenFrom",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "The token account to swap src tokens from"
+        },
+        {
+          "name": "destTokenTo",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "The token account to receive dest tokens to"
+        },
+        {
+          "name": "bridgeStake",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "The bridge stake account thats withdrawn then deposited. PDA. seeds = ['bridge_stake', user.pubkey, SwapArgs.bridge_stake_seed]. Might be long-lived, make sure the seed is not already in use"
+        },
+        {
+          "name": "destTokenFeeTokenAccount",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "The dest_token_mint token account collecting fees. PDA. Seeds = ['fee', dest_token_mint.pubkey]"
+        },
+        {
+          "name": "srcTokenMint",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "Input token mint. If this is wrapped SOL, the account can be set to read-only"
+        },
+        {
+          "name": "destTokenMint",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "Output token mint. If this is wrapped SOL, the account can be set to read-only"
+        },
+        {
+          "name": "prefunder",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "The system account PDA that contains enough SOL to prefund 2 stake accounts for withdrawal. Someone must send SOL to here to initialize it. Seeds = ['prefunder']"
+        },
+        {
+          "name": "slumdogStake",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "The slumdog stake account is split from bridge_stake upon stake withdraw and instant unstaked to refund user. create_with_seed(bridge_stake.pubkey, 'slumdog', stake_program). Might be long-lived, but should be not in use as long as bridge_stake is not in use"
+        },
+        {
+          "name": "unstakeitProgram",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "Sanctum unstake program. unpXTU2Ndrc7WWNyEhQWe4udTzSibLPi25SXv2xbCHQ"
+        },
+        {
+          "name": "unstakePool",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "Sanctum unstake pool. FypPtwbY3FUfzJUtXHSyVRokVKG2jKtH29FmK4ebxRSd"
+        },
+        {
+          "name": "poolSolReserves",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "Sanctum unstake pool SOL reserves. 3rBnnH9TTgd3xwu48rnzGsaQkSr1hR64nY71DrDt6VrQ"
+        },
+        {
+          "name": "unstakeFee",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "Sanctum unstake pool Fee account. 5Pcu8WeQa3VbBz2vdBT49Rj4gbS4hsnfzuL1LmuRaKFY"
+        },
+        {
+          "name": "slumdogStakeAccRecord",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "Sanctum unstake pool stake account record for slumdog stake. PDA of sanctum unstake program. Seeds = [unstakePool.pubkey, slumdogStake.pubkey]."
+        },
+        {
+          "name": "unstakeProtocolFee",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "Sanctum unstake pool protocol fee account. 2hN9UhvRFVfPYKL6rZJ5YiLEPCLTpN755pgwDJHWgFbU"
+        },
+        {
+          "name": "unstakeProtocolFeeDest",
+          "isMut": true,
+          "isSigner": false,
+          "desc": "Sanctum unstake pool protocol fee destination. unstakeProtocolFee.destination"
+        },
+        {
+          "name": "clock",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "sysvar clock"
+        },
+        {
+          "name": "stakeProgram",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "stake program"
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "System program. The withdraw stake and deposit stake accounts slices follow."
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "SwapViaStakeArgs"
+          }
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 7
+      }
     }
   ],
   "types": [
-    {
-      "name": "StakeWrappedSolArgs",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "amount",
-            "type": "u64"
-          }
-        ]
-      }
-    },
     {
       "name": "SwapViaStakeArgs",
       "type": {
@@ -320,10 +551,90 @@
       }
     }
   ],
+  "errors": [
+    {
+      "code": 0,
+      "name": "WrongWsolBridgeIn",
+      "msg": "Wrong wsol_bridge_in account"
+    },
+    {
+      "code": 1,
+      "name": "WrongSolBridgeOut",
+      "msg": "Wrong sol_bridge_out account"
+    },
+    {
+      "code": 2,
+      "name": "WrongFeeTokenAccount",
+      "msg": "Wrong fee token account"
+    },
+    {
+      "code": 3,
+      "name": "WrongTokenProgram",
+      "msg": "Wrong token program"
+    },
+    {
+      "code": 4,
+      "name": "NotSystemAccount",
+      "msg": "Not system account"
+    },
+    {
+      "code": 5,
+      "name": "NotWsolMint",
+      "msg": "Not wSOL mint"
+    },
+    {
+      "code": 6,
+      "name": "WrongStakePoolProgram",
+      "msg": "Wrong stake pool program"
+    },
+    {
+      "code": 7,
+      "name": "WrongBridgeStake",
+      "msg": "Wrong bridge stake account"
+    },
+    {
+      "code": 8,
+      "name": "WrongAdmin",
+      "msg": "Wrong admin authority"
+    },
+    {
+      "code": 9,
+      "name": "StakeAccInactive",
+      "msg": "Stake account has no voter"
+    },
+    {
+      "code": 10,
+      "name": "ValidatorNotPartOfStakePool",
+      "msg": "Validator not part of stake pool"
+    },
+    {
+      "code": 11,
+      "name": "NotSignedByAdmin",
+      "msg": "Not signed by admin"
+    },
+    {
+      "code": 12,
+      "name": "NumericalError",
+      "msg": "Numerical error"
+    },
+    {
+      "code": 13,
+      "name": "UnsupportedProgram",
+      "msg": "Unsupported stake pool program"
+    },
+    {
+      "code": 14,
+      "name": "UnreachableError",
+      "msg": "If you see this, there's a serious bug somewhere"
+    },
+    {
+      "code": 17,
+      "name": "SlumdogUnstakeTooSmall",
+      "msg": "Instant unstake of slumdog stake was not enough to cover rent"
+    }
+  ],
   "metadata": {
     "origin": "shank",
-    "address": "stkitrT1Uoy18Dk1fTrgPw8W6MVzoCfYoAFT4MLsmhq",
-    "binaryVersion": "0.0.11",
-    "libVersion": "0.0.11"
+    "address": "stkitrT1Uoy18Dk1fTrgPw8W6MVzoCfYoAFT4MLsmhq"
   }
 }
