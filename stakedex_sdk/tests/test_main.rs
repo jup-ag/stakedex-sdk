@@ -338,11 +338,7 @@ fn test_jsol_drain_vsa_edge_case() {
     let parts_after_fees = (STAKEDEX.jpool.stake_pool.stake_withdrawal_fee.denominator
         - STAKEDEX.jpool.stake_pool.stake_withdrawal_fee.numerator)
         as u128;
-<<<<<<< HEAD
     let max_withdraw_lamports_bef_fees = u128::from(max_withdraw_lamports)
-=======
-    let max_withdraw_lamports_bef_fees = (u128::from(u64::from(max_withdraw_lamports))
->>>>>>> 6314bd6 (Jupiter changes for jupiter-core compat)
         * (STAKEDEX.jpool.stake_pool.stake_withdrawal_fee.denominator as u128)
         + parts_after_fees
         - 1)
