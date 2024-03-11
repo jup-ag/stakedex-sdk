@@ -2030,7 +2030,7 @@ impl From<PrefundSwapViaStakeKeys> for [AccountMeta; PREFUND_SWAP_VIA_STAKE_IX_A
         [
             AccountMeta {
                 pubkey: keys.user,
-                is_signer: true,
+                is_signer: false, // Jupiter needs to disable signers since shared accounts are PDAs
                 is_writable: true,
             },
             AccountMeta {
