@@ -168,7 +168,7 @@ where
         account_metas.extend(other_account_metas);
         account_metas.push(swap_params.placeholder_account_meta());
         Ok(SwapAndAccountMetas {
-            swap: Swap::StakeDexSwapViaStake { bridge_stake_seed },
+            swap: Swap::StakeDexPrefundSwapViaStake { bridge_stake_seed },
             account_metas,
         })
     }
