@@ -515,7 +515,7 @@ impl Stakedex {
     }
 
     /// Creates all possible Amms from the underlying available Stakedexes
-    pub fn get_amms(self) -> Vec<Box<dyn Amm + Send + Sync>> {
+    pub fn get_amms(self, ignore_cpi_limitation: bool) -> Vec<Box<dyn Amm + Send + Sync>> {
         #[derive(Clone)]
         enum Stakedex {
             SplStakePool(SplStakePoolStakedex),
@@ -554,6 +554,10 @@ impl Stakedex {
                 Stakedex::UnstakeIt(_) => (),
                 Stakedex::Lido(_) => (),
             }
+        }
+
+        if !ignore_cpi_limitation {
+            return amms;
         }
 
         // SplStakePool WithdrawStake + DepositStake
