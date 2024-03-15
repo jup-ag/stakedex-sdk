@@ -1317,7 +1317,7 @@ impl From<DepositStakeKeys> for [AccountMeta; DEPOSIT_STAKE_IX_ACCOUNTS_LEN] {
         [
             AccountMeta {
                 pubkey: keys.user,
-                is_signer: true,
+                is_signer: false,
                 is_writable: true,
             },
             AccountMeta {
@@ -1600,7 +1600,7 @@ impl From<PrefundWithdrawStakeKeys> for [AccountMeta; PREFUND_WITHDRAW_STAKE_IX_
         [
             AccountMeta {
                 pubkey: keys.user,
-                is_signer: true,
+                is_signer: false,
                 is_writable: true,
             },
             AccountMeta {
