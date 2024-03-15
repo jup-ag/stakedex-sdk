@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{Context, Result};
 use solana_program::{borsh0_10::try_from_slice_unchecked, pubkey::Pubkey, stake_history::Epoch};
 use spl_stake_pool::{
     error::StakePoolError,
@@ -48,7 +48,12 @@ impl SplStakePoolStakedex {
         validator_index: usize,
         withdraw_amount: u64,
     ) -> Result<WithdrawStakeQuote, StakePoolError> {
-        let validator_list_entry = self.validator_list.validators.get(validator_index).unwrap();
+        let validator_list_entry = self
+            .validator_list
+            .validators
+            .get(validator_index)
+            .context("Validator index out of bounds")
+            .map_err(|_err| StakePoolError::InvalidState)?;
         // only handle withdrawal from active stake accounts for simplicity.
         // Likely other stake pools can't accept non active stake anyway
         if validator_list_entry.status != StakeStatus::Active.into() {
