@@ -43,7 +43,7 @@ sanctum-solana-cli-utils = { git = "https://github.com/igneous-labs/sanctum-sola
 
 # sanctum-lst-list
 # keep branch = "master" for flexibility of downstream crates
-sanctum-lst-list = { git = "https://github.com/igneous-labs/sanctum-lst-list.git", branch = "master" } # rev = b4f05b2
+sanctum-lst-list = { git = "https://github.com/igneous-labs/sanctum-lst-list.git", rev = "15620aabb965e154b49c15a2648f25fad8c37d3d" } # rev = b4f05b2
 
 # solana core crates
 solana-program = "^1"
