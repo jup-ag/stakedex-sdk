@@ -1,5 +1,5 @@
 use anyhow::Result;
-use jupiter_amm_interface::{AccountMap, KeyedAccount};
+use jupiter_amm_interface::{AccountMap, AmmContext, KeyedAccount};
 use solana_program::{clock::Clock, pubkey::Pubkey, sysvar};
 use spl_stake_pool::find_deposit_authority_program_address;
 use stakedex_sdk_common::{account_missing_err, BaseStakePoolAmm, InitFromKeyedAccount};
@@ -14,6 +14,7 @@ impl InitFromKeyedAccount for SplStakePoolStakedex {
             account,
             params,
         }: &KeyedAccount,
+        _amm_context: &AmmContext,
     ) -> Result<Self> {
         let deposit_authority_program_address =
             find_deposit_authority_program_address(&account.owner, key).0;
