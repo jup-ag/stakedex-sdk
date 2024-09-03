@@ -4,7 +4,7 @@ use anyhow::{anyhow, Result};
 use itertools::Itertools;
 use jupiter_amm_interface::{AccountMap, Amm, KeyedAccount, Quote, QuoteParams, SwapParams};
 use lazy_static::lazy_static;
-use sanctum_lst_list::{PoolInfo, SanctumLst, SanctumLstList};
+use sanctum_lst_list::{PoolInfo, SanctumLst};
 use solana_sdk::{account::Account, instruction::Instruction, pubkey::Pubkey, system_program};
 use spl_token::native_mint;
 use stakedex_interface::{
@@ -27,6 +27,7 @@ use stakedex_sdk_common::{
 use stakedex_spl_stake_pool::{SplStakePoolStakedex, SplStakePoolStakedexInitKeys};
 use stakedex_unstake_it::{UnstakeItStakedex, UnstakeItStakedexPrefund};
 
+pub use sanctum_lst_list::SanctumLstList;
 pub use stakedex_interface::ID as stakedex_program_id;
 
 /// mainnet LUT that contains prefund accounts and other common accounts
@@ -107,7 +108,7 @@ impl Stakedex {
     /// `sanctum_lsts` must be the same iterator passed to [`Self::init_accounts()`]
     pub fn from_fetched_accounts<'a>(
         sanctum_lsts: impl Iterator<Item = &'a SanctumLst>,
-        accounts: &HashMap<Pubkey, Account>,
+        accounts: &AccountMap,
     ) -> (Self, Vec<anyhow::Error>) {
         // So that stakedex is still useable even if some pools fail to load
         let mut errs = Vec::new();
