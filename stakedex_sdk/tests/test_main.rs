@@ -578,6 +578,7 @@ pub fn test_sim_prefund_swap_via_stake(stakedex: &Stakedex, args: TestSwapViaSta
                     token_transfer_authority: signer,
                     open_order_address: None,
                     quote_mint_to_referrer: None,
+                    missing_dynamic_accounts_as_default: None,
                 },
                 0,
             )
@@ -625,6 +626,7 @@ pub fn test_sim_manual_concat_prefund_swap_via_stake(
                     token_transfer_authority: signer,
                     open_order_address: None,
                     quote_mint_to_referrer: None,
+                    missing_dynamic_accounts_as_default: None,
                 },
                 0,
             )
