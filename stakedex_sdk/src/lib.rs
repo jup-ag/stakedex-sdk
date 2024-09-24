@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
 use itertools::Itertools;
 use jupiter_amm_interface::{
-    AccountMap, Amm, AmmContext, ClockRef, KeyedAccount, Quote, QuoteParams, SwapParams,
+    AccountMap, Amm, AmmContext, KeyedAccount, Quote, QuoteParams, SwapParams,
 };
 use lazy_static::lazy_static;
 use sanctum_lst_list::{PoolInfo, SanctumLst};
@@ -13,8 +13,8 @@ use stakedex_interface::{
     StakeWrappedSolKeys, SwapViaStakeArgs,
 };
 use stakedex_jup_interface::{
-    manual_concat_get_account_metas, prefund_get_account_metas, quote_pool_pair, DepositSolWrapper,
-    OneWayPoolPair, PrefundRepayParams, TwoWayPoolPair,
+    extract_sol_reserves_lamports, manual_concat_get_account_metas, prefund_get_account_metas,
+    quote_pool_pair, DepositSolWrapper, OneWayPoolPair, PrefundRepayParams, TwoWayPoolPair,
 };
 use stakedex_lido::LidoStakedex;
 use stakedex_marinade::MarinadeStakedex;
@@ -24,7 +24,7 @@ use stakedex_sdk_common::{
     DepositStakeInfo, DepositStakeQuote, InitFromKeyedAccount, WithdrawStake, WithdrawStakeQuote,
     DEPOSIT_STAKE_DST_TOKEN_ACCOUNT_INDEX,
 };
-use stakedex_spl_stake_pool::{SplStakePoolStakedex, SplStakePoolStakedexInitKeys};
+use stakedex_spl_stake_pool::SplStakePoolStakedex;
 use stakedex_unstake_it::{UnstakeItStakedex, UnstakeItStakedexPrefund};
 
 pub use sanctum_lst_list::SanctumLstList;
@@ -78,15 +78,11 @@ fn get_keyed_account(accounts: &AccountMap, key: &Pubkey) -> Result<KeyedAccount
 fn init_from_keyed_account_no_params<P: InitFromKeyedAccount>(
     accounts: &AccountMap,
     key: &Pubkey,
+    amm_context: &AmmContext,
 ) -> Result<P> {
     let keyed_acc = get_keyed_account(accounts, key)?;
 
-    P::from_keyed_account(
-        &keyed_acc,
-        &AmmContext {
-            clock_ref: ClockRef::default(),
-        },
-    )
+    P::from_keyed_account(&keyed_acc, amm_context)
 }
 
 impl Stakedex {
@@ -121,21 +117,26 @@ impl Stakedex {
         let mut errs = Vec::new();
 
         let unstakeit = UnstakeItStakedexPrefund(
-            init_from_keyed_account_no_params(accounts, &unstake_it_program::SOL_RESERVES_ID)
-                .unwrap_or_else(|e| {
-                    errs.push(e);
-                    UnstakeItStakedex::default()
-                }),
-        );
-
-        let marinade = init_from_keyed_account_no_params(accounts, &marinade_state::ID)
+            init_from_keyed_account_no_params(
+                accounts,
+                &unstake_it_program::SOL_RESERVES_ID,
+                amm_context,
+            )
             .unwrap_or_else(|e| {
                 errs.push(e);
-                MarinadeStakedex::default()
-            });
+                UnstakeItStakedex::default()
+            }),
+        );
 
-        let lido =
-            init_from_keyed_account_no_params(accounts, &lido_state::ID).unwrap_or_else(|e| {
+        let marinade =
+            init_from_keyed_account_no_params(accounts, &marinade_state::ID, amm_context)
+                .unwrap_or_else(|e| {
+                    errs.push(e);
+                    MarinadeStakedex::default()
+                });
+
+        let lido = init_from_keyed_account_no_params(accounts, &lido_state::ID, amm_context)
+            .unwrap_or_else(|e| {
                 errs.push(e);
                 LidoStakedex::default()
             });
@@ -204,19 +205,17 @@ impl Stakedex {
 
     pub fn update(&mut self, account_map: &AccountMap) -> Vec<anyhow::Error> {
         // unstake.it special-case: required reinitialization to save sol_reserves_lamports correctly
-        let maybe_unstake_it_init_err = match init_from_keyed_account_no_params(
-            account_map,
-            &unstake_it_program::SOL_RESERVES_ID,
-        ) {
-            Ok(unstakeit) => {
-                self.unstakeit = UnstakeItStakedexPrefund(unstakeit);
-                None
-            }
-            Err(e) => Some(e),
-        };
+        let maybe_extract_sol_reserves_lamports_err =
+            match extract_sol_reserves_lamports(&account_map) {
+                Ok(sol_reserves_lamports) => {
+                    self.unstakeit.0.sol_reserves_lamports = sol_reserves_lamports;
+                    None
+                }
+                Err(err) => Some(err),
+            };
 
         let mut errs = self.update_data(account_map);
-        if let Some(e) = maybe_unstake_it_init_err {
+        if let Some(e) = maybe_extract_sol_reserves_lamports_err {
             errs.push(e);
         }
         errs

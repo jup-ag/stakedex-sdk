@@ -112,7 +112,7 @@ fn extract_incoming_stake(accounts_map: &AccountMap) -> Result<u64> {
     Ok(incoming_stake)
 }
 
-fn extract_sol_reserves_lamports(accounts_map: &AccountMap) -> Result<u64> {
+pub fn extract_sol_reserves_lamports(accounts_map: &AccountMap) -> Result<u64> {
     let Account {
         lamports: sol_reserves_lamports,
         ..

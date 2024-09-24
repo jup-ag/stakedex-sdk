@@ -3,11 +3,11 @@ use jupiter_amm_interface::{
     AccountMap, Amm, AmmContext, KeyedAccount, Quote, QuoteParams, Swap, SwapAndAccountMetas,
     SwapParams,
 };
-use solana_sdk::{pubkey::Pubkey, sysvar};
+use solana_sdk::pubkey::Pubkey;
 use stakedex_interface::PREFUND_SWAP_VIA_STAKE_IX_ACCOUNTS_LEN;
 use stakedex_sdk_common::{
-    account_missing_err, find_stake_pool_pair_amm_key, spl_deposit_cap_guard_program,
-    unstake_it_program, DepositStake, WithdrawStake, TEMPORARY_JUP_AMM_LABEL,
+    find_stake_pool_pair_amm_key, spl_deposit_cap_guard_program, unstake_it_program, DepositStake,
+    WithdrawStake, TEMPORARY_JUP_AMM_LABEL,
 };
 use std::collections::HashSet;
 
