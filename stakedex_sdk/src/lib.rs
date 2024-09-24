@@ -78,15 +78,11 @@ fn get_keyed_account(accounts: &AccountMap, key: &Pubkey) -> Result<KeyedAccount
 fn init_from_keyed_account_no_params<P: InitFromKeyedAccount>(
     accounts: &AccountMap,
     key: &Pubkey,
+    amm_context: &AmmContext,
 ) -> Result<P> {
     let keyed_acc = get_keyed_account(accounts, key)?;
 
-    P::from_keyed_account(
-        &keyed_acc,
-        &AmmContext {
-            clock_ref: ClockRef::default(),
-        },
-    )
+    P::from_keyed_account(&keyed_acc, amm_context)
 }
 
 impl Stakedex {
@@ -121,21 +117,26 @@ impl Stakedex {
         let mut errs = Vec::new();
 
         let unstakeit = UnstakeItStakedexPrefund(
-            init_from_keyed_account_no_params(accounts, &unstake_it_program::SOL_RESERVES_ID)
-                .unwrap_or_else(|e| {
-                    errs.push(e);
-                    UnstakeItStakedex::default()
-                }),
-        );
-
-        let marinade = init_from_keyed_account_no_params(accounts, &marinade_state::ID)
+            init_from_keyed_account_no_params(
+                accounts,
+                &unstake_it_program::SOL_RESERVES_ID,
+                amm_context,
+            )
             .unwrap_or_else(|e| {
                 errs.push(e);
-                MarinadeStakedex::default()
-            });
+                UnstakeItStakedex::default()
+            }),
+        );
 
-        let lido =
-            init_from_keyed_account_no_params(accounts, &lido_state::ID).unwrap_or_else(|e| {
+        let marinade =
+            init_from_keyed_account_no_params(accounts, &marinade_state::ID, amm_context)
+                .unwrap_or_else(|e| {
+                    errs.push(e);
+                    MarinadeStakedex::default()
+                });
+
+        let lido = init_from_keyed_account_no_params(accounts, &lido_state::ID, amm_context)
+            .unwrap_or_else(|e| {
                 errs.push(e);
                 LidoStakedex::default()
             });
