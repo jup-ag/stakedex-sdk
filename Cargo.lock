@@ -3165,26 +3165,13 @@ checksum = "f98d2aa92eebf49b69786be48e4477826b256916e84a57ff2a4f21923b48eb4c"
 [[package]]
 name = "sanctum-lst-list"
 version = "0.2.0"
-source = "git+https://github.com/jup-ag/sanctum-lst-list.git?rev=eaa5c6e2fe0f97b853688a017ebbd3a3b10908ce#eaa5c6e2fe0f97b853688a017ebbd3a3b10908ce"
+source = "git+https://github.com/jup-ag/sanctum-lst-list.git?rev=9feccf7ac1dca9394006a249e3b979761baac007#9feccf7ac1dca9394006a249e3b979761baac007"
 dependencies = [
- "sanctum-macros 1.2.0",
+ "sanctum-macros",
  "serde",
  "serde_with 3.4.0",
  "solana-program 2.0.15",
  "toml",
-]
-
-[[package]]
-name = "sanctum-macros"
-version = "1.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "23668fc5661fe63573abfbb823e3bfe246d3939dafbf56d361a9b3dbea72fa0d"
-dependencies = [
- "heck",
- "proc-macro2",
- "quote",
- "solana-program 1.18.23",
- "syn 2.0.87",
 ]
 
 [[package]]
@@ -4918,7 +4905,7 @@ name = "srlut"
 version = "0.1.0"
 dependencies = [
  "clap 3.2.25",
- "sanctum-macros 1.3.0",
+ "sanctum-macros",
  "sanctum-solana-cli-utils",
  "serde",
  "serde_json",
@@ -5046,7 +5033,7 @@ dependencies = [
  "anyhow",
  "jupiter-amm-interface",
  "rust_decimal",
- "sanctum-macros 1.3.0",
+ "sanctum-macros",
  "solana-program 2.0.15",
  "stakedex_interface",
  "thiserror",
