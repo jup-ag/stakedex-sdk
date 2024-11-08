@@ -13,45 +13,42 @@ members = [
 [workspace.dependencies]
 anyhow = "^1.0"
 bincode = "^1.0"
-borsh = ">=0.9,<1.0.0"
+borsh = "1"
 clap = "^3"
 itertools = ">=0.1"
-jupiter-amm-interface = "~0.4.0"
+jupiter-amm-interface = "~0.4.6"
 lazy_static = "^1.0"
 # set git dependencies to branch instead of locking to rev so that consumers can upgrade easily
-lido = { git = "https://github.com/jup-ag/solido", rev = "a0de12d06502680277405c7e795ffa82f30af38c", features = ["no-entrypoint"] } # rev = "ec25a9b"
-marinade_finance_interface = { git = "https://github.com/jup-ag/marinade_finance_interface", rev = "5747b5350c5505fc2ea597c3f8ae1f8cf71c363d" } # rev = "4d1895b"
+lido = { git = "https://github.com/jup-ag/solido", rev = "0ab9a8145402ac0b2fe70ebe304c9f1c231bcb8d", features = ["no-entrypoint"] } # rev = "ec25a9b"
+marinade_finance_interface = { git = "https://github.com/jup-ag/marinade_finance_interface", rev = "51ee4b4d4bd037da2964acc11c65d8d3e520c824" } # rev = "4d1895b"
 num-derive = ">=0.1"
 num-traits = ">=0.1"
 rand = "0.8.5"
 rust_decimal = "1.36" # anything >1.32 uses borsh ^1
-sanctum-macros = "^1.2"
+sanctum-macros = { git = "https://github.com/jup-ag/sanctum-macros.git", rev = "7f2defa7c72aebea24b4bb4d2076ce8c0765086d" }
 serde = "^1"
 serde_json = "^1"
-spl-associated-token-account = { version = ">=1", features = ["no-entrypoint"] }
-spl-math = { version = "0.1.0", features = ["no-entrypoint"] }
-spl-stake-pool = { git = "https://github.com/solana-labs/solana-program-library.git", rev = "a3996814cb44eab2834f72113b742c875ac7b1b9", features = [
-    "no-entrypoint",
-] }
-#spl-stake-pool = { version = "^1", features = ["no-entrypoint"] }
-spl-token = ">=3.0"
+spl-associated-token-account = { version = ">=5", features = ["no-entrypoint"] }
+spl-math = { version = "0.3.0", features = ["no-entrypoint"] }
+spl-stake-pool = { version = "^2", features = ["no-entrypoint"] }
+spl-token = ">=5.0"
 thiserror = "^1.0"
 tokio = "^1.0"
-unstake_interface = { git = "https://github.com/igneous-labs/sanctum-unstake-program.git", rev = "069f941" }
-unstake-lib = { git = "https://github.com/igneous-labs/sanctum-unstake-program.git", rev = "069f941" }
+unstake_interface = { git = "https://github.com/jup-ag/sanctum-unstake-program.git", rev = "540d6457fec88c31bda954541d886c248382d283" }
+unstake-lib = { git = "https://github.com/jup-ag/sanctum-unstake-program.git", rev = "540d6457fec88c31bda954541d886c248382d283" }
 
 # sanctum solana utils
-sanctum-solana-cli-utils = { git = "https://github.com/igneous-labs/sanctum-solana-utils.git", branch = "master" } # rev = "111f01"
+sanctum-solana-cli-utils = { git = "https://github.com/jup-ag/sanctum-solana-utils.git", rev = "266d745c4d6d66041030d8315fcea41a916680fd" } # rev = "111f01"
 
 # sanctum-lst-list
 # keep branch = "master" for flexibility of downstream crates
-sanctum-lst-list = { git = "https://github.com/igneous-labs/sanctum-lst-list.git", branch = "master" } # rev = ebecde4
+sanctum-lst-list = { git = "https://github.com/jup-ag/sanctum-lst-list.git", rev="eaa5c6e2fe0f97b853688a017ebbd3a3b10908ce" } # rev = ebecde4
 
 # solana core crates
-solana-program = "1.18"
-solana-sdk = "1.18"
-solana-account-decoder = "1.18"
-solana-client = "1.18"
+solana-program = "~2.0"
+solana-sdk = "~2.0"
+solana-account-decoder = "~2.0"
+solana-client = "~2.0"
 
 # workspace members
 stakedex_deposit_sol_interface = { path = "./interfaces/stakedex_deposit_sol_interface" }

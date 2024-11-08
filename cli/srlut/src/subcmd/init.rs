@@ -1,5 +1,5 @@
 use clap::Args;
-use sanctum_solana_cli_utils::{parse_signer, TxSendingNonblockingRpcClient};
+use sanctum_solana_cli_utils::{parse_signer, HandleTxArgs, TxSendingNonblockingRpcClient};
 use solana_sdk::{
     address_lookup_table::instruction::create_lookup_table,
     epoch_info::EpochInfo,
@@ -54,6 +54,7 @@ impl InitArgs {
 
         eprintln!("Creating LUT {lut_addr}");
 
-        rpc.handle_tx(&tx, args.send_mode).await;
+        rpc.handle_tx(&tx, args.send_mode, HandleTxArgs::default())
+            .await;
     }
 }
