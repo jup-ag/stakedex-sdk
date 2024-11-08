@@ -42,7 +42,7 @@ sanctum-solana-cli-utils = { git = "https://github.com/jup-ag/sanctum-solana-uti
 
 # sanctum-lst-list
 # keep branch = "master" for flexibility of downstream crates
-sanctum-lst-list = { git = "https://github.com/jup-ag/sanctum-lst-list.git", rev="eaa5c6e2fe0f97b853688a017ebbd3a3b10908ce" } # rev = ebecde4
+sanctum-lst-list = { git = "https://github.com/jup-ag/sanctum-lst-list.git", rev="9feccf7ac1dca9394006a249e3b979761baac007" } # rev = ebecde4
 
 # solana core crates
 solana-program = "~2.0"
