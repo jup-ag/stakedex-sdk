@@ -5587,7 +5587,7 @@ checksum = "673aac59facbab8a9007c7f6108d11f63b603f7cabff99fabf650fea5c32b861"
 [[package]]
 name = "unstake-lib"
 version = "0.1.0"
-source = "git+https://github.com/jup-ag/sanctum-unstake-program.git?rev=540d6457fec88c31bda954541d886c248382d283#540d6457fec88c31bda954541d886c248382d283"
+source = "git+https://github.com/jup-ag/sanctum-unstake-program.git?rev=adbaccd0693992527e4fd8644e0d48e156693f9a#adbaccd0693992527e4fd8644e0d48e156693f9a"
 dependencies = [
  "spl-math 0.3.0",
  "unstake_interface",
@@ -5596,7 +5596,7 @@ dependencies = [
 [[package]]
 name = "unstake_interface"
 version = "2.0.0"
-source = "git+https://github.com/jup-ag/sanctum-unstake-program.git?rev=540d6457fec88c31bda954541d886c248382d283#540d6457fec88c31bda954541d886c248382d283"
+source = "git+https://github.com/jup-ag/sanctum-unstake-program.git?rev=adbaccd0693992527e4fd8644e0d48e156693f9a#adbaccd0693992527e4fd8644e0d48e156693f9a"
 dependencies = [
  "borsh 1.5.2",
  "num-derive 0.3.3",

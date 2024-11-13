@@ -34,8 +34,8 @@ spl-stake-pool = { version = "^2", features = ["no-entrypoint"] }
 spl-token = ">=5.0"
 thiserror = "^1.0"
 tokio = "^1.0"
-unstake_interface = { git = "https://github.com/jup-ag/sanctum-unstake-program.git", rev = "540d6457fec88c31bda954541d886c248382d283" }
-unstake-lib = { git = "https://github.com/jup-ag/sanctum-unstake-program.git", rev = "540d6457fec88c31bda954541d886c248382d283" }
+unstake_interface = { git = "https://github.com/jup-ag/sanctum-unstake-program.git", rev = "adbaccd0693992527e4fd8644e0d48e156693f9a" }
+unstake-lib = { git = "https://github.com/jup-ag/sanctum-unstake-program.git", rev = "adbaccd0693992527e4fd8644e0d48e156693f9a" }
 
 # sanctum solana utils
 sanctum-solana-cli-utils = { git = "https://github.com/jup-ag/sanctum-solana-utils.git", rev = "266d745c4d6d66041030d8315fcea41a916680fd" } # rev = "111f01"
