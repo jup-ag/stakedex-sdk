@@ -1,5 +1,5 @@
 use jupiter_amm_interface::{
-    AccountMap, AmmContext, ClockRef, Quote, QuoteParams, SwapMode, SwapParams,
+    AccountMap, AmmContext, ClockRef, Quote, QuoteParams, Swap, SwapMode, SwapParams,
 };
 use lazy_static::lazy_static;
 use sanctum_lst_list::SanctumLstList;
@@ -74,7 +74,11 @@ lazy_static! {
 }
 
 fn fetch_accounts(accounts_pubkeys: &[Pubkey]) -> AccountMap {
-    let fetched = RPC.get_multiple_accounts(accounts_pubkeys).unwrap();
+    let fetched = accounts_pubkeys
+        .chunks(100)
+        .map(|chunk| RPC.get_multiple_accounts(chunk).unwrap())
+        .flatten()
+        .collect::<Vec<_>>();
     zip(accounts_pubkeys, fetched)
         .filter_map(|(pubkey, opt)| match opt {
             Some(acc) => Some((*pubkey, acc)),
@@ -579,16 +583,17 @@ pub fn test_sim_prefund_swap_via_stake(stakedex: &Stakedex, args: TestSwapViaSta
         stakedex
             .prefund_swap_via_stake_ix(
                 &SwapParams {
-                    jupiter_program_id: &jupiter_program::ID,
+                    swap_mode: SwapMode::ExactIn,
                     in_amount: quote.in_amount,
                     out_amount: quote.out_amount,
-                    destination_mint: output_mint,
                     source_mint: input_mint,
-                    destination_token_account: dst_token_acc,
+                    destination_mint: output_mint,
                     source_token_account: src_token_acc,
+                    destination_token_account: dst_token_acc,
                     token_transfer_authority: signer,
                     open_order_address: None,
                     quote_mint_to_referrer: None,
+                    jupiter_program_id: &jupiter_program::ID,
                     missing_dynamic_accounts_as_default: false,
                 },
                 0,
@@ -627,16 +632,17 @@ pub fn test_sim_manual_concat_prefund_swap_via_stake(
         stakedex
             .manual_concat_prefund_swap_via_stake_ixs(
                 &SwapParams {
-                    jupiter_program_id: &jupiter_program::ID,
+                    swap_mode: SwapMode::ExactIn,
                     in_amount: quote.in_amount,
                     out_amount: quote.out_amount,
-                    destination_mint: output_mint,
                     source_mint: input_mint,
-                    destination_token_account: dst_token_acc,
+                    destination_mint: output_mint,
                     source_token_account: src_token_acc,
+                    destination_token_account: dst_token_acc,
                     token_transfer_authority: signer,
                     open_order_address: None,
                     quote_mint_to_referrer: None,
+                    jupiter_program_id: &jupiter_program::ID,
                     missing_dynamic_accounts_as_default: false,
                 },
                 0,
