@@ -160,7 +160,7 @@ impl From<StakeWrappedSolKeys> for [AccountMeta; STAKE_WRAPPED_SOL_IX_ACCOUNTS_L
         [
             AccountMeta {
                 pubkey: keys.user,
-                is_signer: true,
+                is_signer: false,
                 is_writable: false,
             },
             AccountMeta {
@@ -466,7 +466,7 @@ impl From<SwapViaStakeKeys> for [AccountMeta; SWAP_VIA_STAKE_IX_ACCOUNTS_LEN] {
         [
             AccountMeta {
                 pubkey: keys.user,
-                is_signer: true,
+                is_signer: false,
                 is_writable: true,
             },
             AccountMeta {
@@ -1385,8 +1385,8 @@ impl From<DepositStakeKeys> for [AccountMeta; DEPOSIT_STAKE_IX_ACCOUNTS_LEN] {
         [
             AccountMeta {
                 pubkey: keys.user,
-                is_signer: true,
-                is_writable: true,
+                is_signer: false,
+                is_writable: false,
             },
             AccountMeta {
                 pubkey: keys.stake_account,
@@ -1668,7 +1668,7 @@ impl From<PrefundWithdrawStakeKeys> for [AccountMeta; PREFUND_WITHDRAW_STAKE_IX_
         [
             AccountMeta {
                 pubkey: keys.user,
-                is_signer: true,
+                is_signer: false,
                 is_writable: true,
             },
             AccountMeta {
@@ -2098,7 +2098,7 @@ impl From<PrefundSwapViaStakeKeys> for [AccountMeta; PREFUND_SWAP_VIA_STAKE_IX_A
         [
             AccountMeta {
                 pubkey: keys.user,
-                is_signer: true,
+                is_signer: false,
                 is_writable: true,
             },
             AccountMeta {
