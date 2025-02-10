@@ -27,6 +27,8 @@ impl Default for MarinadeStakedex {
             account: Pubkey::default(),
             item_size: 0,
             count: 0,
+            // new_account: Pubkey::default(),
+            // copied_count: 0,
             reserved1: Pubkey::default(),
             reserved2: 0,
         };

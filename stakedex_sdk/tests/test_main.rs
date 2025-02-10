@@ -74,7 +74,11 @@ lazy_static! {
 }
 
 fn fetch_accounts(accounts_pubkeys: &[Pubkey]) -> AccountMap {
-    let fetched = RPC.get_multiple_accounts(accounts_pubkeys).unwrap();
+    let fetched = accounts_pubkeys
+        .chunks(100)
+        .map(|chunk| RPC.get_multiple_accounts(chunk).unwrap())
+        .flatten()
+        .collect::<Vec<_>>();
     zip(accounts_pubkeys, fetched)
         .filter_map(|(pubkey, opt)| match opt {
             Some(acc) => Some((*pubkey, acc)),
@@ -87,13 +91,25 @@ fn fetch_accounts(accounts_pubkeys: &[Pubkey]) -> AccountMap {
 }
 
 #[test]
-fn test_swap_via_stake_unknown_token() {
+fn test_quote_swap_via_stake_jitosol_bsol() {
+    STAKEDEX
+        .quote_swap_via_stake(&QuoteParams {
+            amount: 1_000_000_000,
+            input_mint: jitosol::ID,
+            output_mint: bsol::ID,
+            swap_mode: jupiter_amm_interface::SwapMode::ExactIn,
+        })
+        .unwrap();
+}
+
+#[test]
+fn test_quote_swap_via_stake_unknown_token() {
     let unknown_token = Pubkey::new_unique();
     let res = STAKEDEX.quote_swap_via_stake(&QuoteParams {
         amount: 1_000_000_000,
         input_mint: unknown_token,
         output_mint: bsol::ID,
-        swap_mode: SwapMode::default(),
+        swap_mode: jupiter_amm_interface::SwapMode::ExactIn,
     });
     assert!(res.is_err());
 }
@@ -320,7 +336,7 @@ fn test_jsol_drain_vsa_edge_case() {
         .validator_list
         .validators
         .iter()
-        .max_by_key(|v| v.active_stake_lamports)
+        .max_by_key(|v| u64::from(v.active_stake_lamports))
         .unwrap();
     let max_withdraw_lamports = largest_active_stake_vsi.active_stake_lamports;
     let parts_after_fees = (STAKEDEX.jpool.stake_pool.stake_withdrawal_fee.denominator
@@ -338,17 +354,17 @@ fn test_jsol_drain_vsa_edge_case() {
         .unwrap();
     let max_possible_quote = STAKEDEX
         .quote_swap_via_stake(&QuoteParams {
-            amount: max_withdraw_jsol,
-            input_mint: jsol::ID,
+            amount: 100_000_000_000,
+            input_mint: stsol::ID,
             output_mint: msol::ID,
-            swap_mode: SwapMode::default(),
+            swap_mode: jupiter_amm_interface::SwapMode::ExactIn,
         })
         .unwrap();
     let should_fail = STAKEDEX.quote_swap_via_stake(&QuoteParams {
         amount: max_withdraw_jsol + 1,
         input_mint: jsol::ID,
         output_mint: msol::ID,
-        swap_mode: SwapMode::default(),
+        swap_mode: SwapMode::ExactIn,
     });
     assert!(should_fail.is_err());
 
@@ -566,18 +582,18 @@ pub fn test_sim_prefund_swap_via_stake(stakedex: &Stakedex, args: TestSwapViaSta
         stakedex
             .prefund_swap_via_stake_ix(
                 &SwapParams {
-                    jupiter_program_id: &jupiter_program::ID,
+                    swap_mode: SwapMode::ExactIn,
                     in_amount: quote.in_amount,
                     out_amount: quote.out_amount,
-                    destination_mint: output_mint,
                     source_mint: input_mint,
-                    destination_token_account: dst_token_acc,
+                    destination_mint: output_mint,
                     source_token_account: src_token_acc,
+                    destination_token_account: dst_token_acc,
                     token_transfer_authority: signer,
                     open_order_address: None,
                     quote_mint_to_referrer: None,
+                    jupiter_program_id: &jupiter_program::ID,
                     missing_dynamic_accounts_as_default: false,
-                    swap_mode: SwapMode::ExactIn,
                 },
                 0,
             )
@@ -615,18 +631,18 @@ pub fn test_sim_manual_concat_prefund_swap_via_stake(
         stakedex
             .manual_concat_prefund_swap_via_stake_ixs(
                 &SwapParams {
-                    jupiter_program_id: &jupiter_program::ID,
+                    swap_mode: SwapMode::ExactIn,
                     in_amount: quote.in_amount,
                     out_amount: quote.out_amount,
-                    destination_mint: output_mint,
                     source_mint: input_mint,
-                    destination_token_account: dst_token_acc,
+                    destination_mint: output_mint,
                     source_token_account: src_token_acc,
+                    destination_token_account: dst_token_acc,
                     token_transfer_authority: signer,
                     open_order_address: None,
                     quote_mint_to_referrer: None,
+                    jupiter_program_id: &jupiter_program::ID,
                     missing_dynamic_accounts_as_default: false,
-                    swap_mode: SwapMode::ExactIn,
                 },
                 0,
             )
