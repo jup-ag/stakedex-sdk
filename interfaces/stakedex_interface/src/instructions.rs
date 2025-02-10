@@ -166,56 +166,16 @@ impl From<StakeWrappedSolAccounts<'_, '_>> for StakeWrappedSolKeys {
 impl From<StakeWrappedSolKeys> for [AccountMeta; STAKE_WRAPPED_SOL_IX_ACCOUNTS_LEN] {
     fn from(keys: StakeWrappedSolKeys) -> Self {
         [
-            AccountMeta {
-                pubkey: keys.user,
-                is_signer: true,
-                is_writable: false,
-            },
-            AccountMeta {
-                pubkey: keys.wsol_from,
-                is_signer: false,
-                is_writable: true,
-            },
-            AccountMeta {
-                pubkey: keys.dest_token_to,
-                is_signer: false,
-                is_writable: true,
-            },
-            AccountMeta {
-                pubkey: keys.wsol_bridge_in,
-                is_signer: false,
-                is_writable: true,
-            },
-            AccountMeta {
-                pubkey: keys.sol_bridge_out,
-                is_signer: false,
-                is_writable: true,
-            },
-            AccountMeta {
-                pubkey: keys.dest_token_fee_token_account,
-                is_signer: false,
-                is_writable: true,
-            },
-            AccountMeta {
-                pubkey: keys.dest_token_mint,
-                is_signer: false,
-                is_writable: true,
-            },
-            AccountMeta {
-                pubkey: keys.wsol_mint,
-                is_signer: false,
-                is_writable: false,
-            },
-            AccountMeta {
-                pubkey: keys.token_program,
-                is_signer: false,
-                is_writable: false,
-            },
-            AccountMeta {
-                pubkey: keys.system_program,
-                is_signer: false,
-                is_writable: false,
-            },
+            AccountMeta::new_readonly(keys.user, false),
+            AccountMeta::new(keys.wsol_from, false),
+            AccountMeta::new(keys.dest_token_to, false),
+            AccountMeta::new(keys.wsol_bridge_in, false),
+            AccountMeta::new(keys.sol_bridge_out, false),
+            AccountMeta::new(keys.dest_token_fee_token_account, false),
+            AccountMeta::new(keys.dest_token_mint, false),
+            AccountMeta::new_readonly(keys.wsol_mint, false),
+            AccountMeta::new_readonly(keys.token_program, false),
+            AccountMeta::new_readonly(keys.system_program, false),
         ]
     }
 }
@@ -472,41 +432,13 @@ impl From<SwapViaStakeAccounts<'_, '_>> for SwapViaStakeKeys {
 impl From<SwapViaStakeKeys> for [AccountMeta; SWAP_VIA_STAKE_IX_ACCOUNTS_LEN] {
     fn from(keys: SwapViaStakeKeys) -> Self {
         [
-            AccountMeta {
-                pubkey: keys.user,
-                is_signer: true,
-                is_writable: true,
-            },
-            AccountMeta {
-                pubkey: keys.src_token_from,
-                is_signer: false,
-                is_writable: true,
-            },
-            AccountMeta {
-                pubkey: keys.dest_token_to,
-                is_signer: false,
-                is_writable: true,
-            },
-            AccountMeta {
-                pubkey: keys.bridge_stake,
-                is_signer: false,
-                is_writable: true,
-            },
-            AccountMeta {
-                pubkey: keys.dest_token_fee_token_account,
-                is_signer: false,
-                is_writable: true,
-            },
-            AccountMeta {
-                pubkey: keys.src_token_mint,
-                is_signer: false,
-                is_writable: true,
-            },
-            AccountMeta {
-                pubkey: keys.dest_token_mint,
-                is_signer: false,
-                is_writable: true,
-            },
+            AccountMeta::new(keys.user, false),
+            AccountMeta::new(keys.src_token_from, false),
+            AccountMeta::new(keys.dest_token_to, false),
+            AccountMeta::new(keys.bridge_stake, false),
+            AccountMeta::new(keys.dest_token_fee_token_account, false),
+            AccountMeta::new(keys.src_token_mint, false),
+            AccountMeta::new(keys.dest_token_mint, false),
         ]
     }
 }
@@ -1393,7 +1325,7 @@ impl From<DepositStakeKeys> for [AccountMeta; DEPOSIT_STAKE_IX_ACCOUNTS_LEN] {
         [
             AccountMeta {
                 pubkey: keys.user,
-                is_signer: true,
+                is_signer: false,
                 is_writable: true,
             },
             AccountMeta {
@@ -1676,7 +1608,7 @@ impl From<PrefundWithdrawStakeKeys> for [AccountMeta; PREFUND_WITHDRAW_STAKE_IX_
         [
             AccountMeta {
                 pubkey: keys.user,
-                is_signer: true,
+                is_signer: false,
                 is_writable: true,
             },
             AccountMeta {
@@ -2106,7 +2038,7 @@ impl From<PrefundSwapViaStakeKeys> for [AccountMeta; PREFUND_SWAP_VIA_STAKE_IX_A
         [
             AccountMeta {
                 pubkey: keys.user,
-                is_signer: true,
+                is_signer: false, // Jupiter needs to disable signers since shared accounts are PDAs
                 is_writable: true,
             },
             AccountMeta {
@@ -2509,7 +2441,7 @@ impl From<WithdrawWrappedSolKeys> for [AccountMeta; WITHDRAW_WRAPPED_SOL_IX_ACCO
         [
             AccountMeta {
                 pubkey: keys.user,
-                is_signer: true,
+                is_signer: false,
                 is_writable: false,
             },
             AccountMeta {
