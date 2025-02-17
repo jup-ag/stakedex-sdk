@@ -174,6 +174,7 @@ impl DepositStake for SplStakePoolStakedex {
             stake_program: stake::program::ID,
         })?;
         Ok(if self.is_stake_deposit_capped() {
+            // this adds 2 accounts
             to_deposit_cap_guard_ix(ix, self.spl_deposit_cap_guard_program_address)
         } else {
             ix
@@ -181,7 +182,7 @@ impl DepositStake for SplStakePoolStakedex {
     }
 
     fn accounts_len(&self) -> usize {
-        SPL_STAKE_POOL_DEPOSIT_STAKE_IX_ACCOUNTS_LEN
+        SPL_STAKE_POOL_DEPOSIT_STAKE_IX_ACCOUNTS_LEN + 2
     }
 }
 
