@@ -106,6 +106,7 @@ impl DepositSol for SplStakePoolStakedex {
             stake_pool_reserve_stake: self.stake_pool.reserve_stake,
         })?;
         Ok(if self.is_sol_deposit_capped() {
+            // this add 2 accounts
             to_deposit_cap_guard_ix(ix, self.spl_deposit_cap_guard_program_address)
         } else {
             ix
@@ -114,6 +115,6 @@ impl DepositSol for SplStakePoolStakedex {
 
     #[inline]
     fn accounts_len(&self) -> usize {
-        SPL_STAKE_POOL_DEPOSIT_SOL_IX_ACCOUNTS_LEN
+        SPL_STAKE_POOL_DEPOSIT_SOL_IX_ACCOUNTS_LEN + 2
     }
 }
