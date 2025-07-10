@@ -19,7 +19,7 @@ itertools = ">=0.1"
 jupiter-amm-interface = "0.5.0"
 lazy_static = "^1.0"
 # set git dependencies to branch instead of locking to rev so that consumers can upgrade easily
-lido = { git = "https://github.com/jup-ag/solido", rev = "047f7cd3f9302e8b632de0a96bbb58f69ed5f3a3", features = ["no-entrypoint"] }
+lido = { git = "https://github.com/jup-ag/solido", rev = "178a569bfb2ad742f515b7601f573eebf5aceed6", features = ["no-entrypoint"] }
 marinade_finance_interface = { git = "https://github.com/jup-ag/marinade_finance_interface", rev = "716a4a593ee2202abe0d03bea51921f2eae57414" } # rev = "4d1895b"
 num-derive = ">=0.1"
 num-traits = ">=0.1"
@@ -48,10 +48,10 @@ sanctum-solana-cli-utils = { git = "https://github.com/igneous-labs/sanctum-sola
 sanctum-lst-list = { git = "https://github.com/igneous-labs/sanctum-lst-list.git", branch = "master" }
 
 # solana core crates
-solana-program = ">=1"
-solana-sdk = ">=1"
-solana-account-decoder = ">=1"
-solana-client = ">=1"
+solana-program = "2.3"
+solana-sdk = "2.3"
+solana-account-decoder = "2.3"
+solana-client = "2.3"
 
 # workspace members
 stakedex_deposit_sol_interface = { path = "./interfaces/stakedex_deposit_sol_interface" }
