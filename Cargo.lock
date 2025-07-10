@@ -2308,7 +2308,7 @@ dependencies = [
 [[package]]
 name = "lido"
 version = "1.3.6"
-source = "git+https://github.com/jup-ag/solido?rev=178a569bfb2ad742f515b7601f573eebf5aceed6#178a569bfb2ad742f515b7601f573eebf5aceed6"
+source = "git+https://github.com/jup-ag/solido?rev=4aee96a4e2fdb3480eadb2f27364ca81a8028daf#4aee96a4e2fdb3480eadb2f27364ca81a8028daf"
 dependencies = [
  "arrayref",
  "borsh 0.10.4",
