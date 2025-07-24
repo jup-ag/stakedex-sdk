@@ -384,12 +384,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "assert_matches"
-version = "1.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9b34d609dfbaf33d6889b2b7106d3ca345eacad44200913df5ba02bfd31d2ba9"
-
-[[package]]
 name = "async-channel"
 version = "1.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2202,9 +2196,9 @@ dependencies = [
 
 [[package]]
 name = "jupiter-amm-interface"
-version = "0.5.0"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2121fe17669e4e07875b132c3eb67511d5484bdd324964e3e64d7c424413399c"
+checksum = "db91d39569a7d9b2b0cd1007075abde274a590e57f8897cde517c6546d098638"
 dependencies = [
  "ahash 0.8.11",
  "anyhow",
@@ -5895,7 +5889,7 @@ dependencies = [
  "solana-transaction-error",
  "solana-transaction-status-client-types",
  "solana-vote-interface",
- "spl-associated-token-account 7.0.0",
+ "spl-associated-token-account",
  "spl-memo 6.0.0",
  "spl-token 8.0.0",
  "spl-token-2022 8.0.1",
@@ -6072,22 +6066,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d96d2d1d716fb500937168cc09353ffdc7a012be8475ac7308e1bdf0e3923300"
 dependencies = [
  "lock_api",
-]
-
-[[package]]
-name = "spl-associated-token-account"
-version = "4.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "68034596cf4804880d265f834af1ff2f821ad5293e41fa0f8f59086c181fc38e"
-dependencies = [
- "assert_matches",
- "borsh 1.5.7",
- "num-derive 0.4.2",
- "num-traits",
- "solana-program",
- "spl-token 6.0.0",
- "spl-token-2022 4.0.0",
- "thiserror 1.0.69",
 ]
 
 [[package]]
@@ -6681,8 +6659,8 @@ dependencies = [
  "serde_json",
  "solana-program",
  "solana-sdk",
- "spl-associated-token-account 4.0.0",
- "spl-token 6.0.0",
+ "spl-associated-token-account",
+ "spl-token 8.0.0",
  "stakedex_sdk_common",
  "tokio",
 ]
@@ -6733,7 +6711,7 @@ dependencies = [
  "rand 0.8.5",
  "rust_decimal",
  "solana-sdk",
- "spl-token 6.0.0",
+ "spl-token 8.0.0",
  "stakedex_interface",
  "stakedex_sdk_common",
  "unstake-lib",
@@ -6751,7 +6729,7 @@ dependencies = [
  "lido",
  "solana-client",
  "solana-program",
- "spl-token 6.0.0",
+ "spl-token 8.0.0",
  "stakedex_deposit_sol_interface",
  "stakedex_sdk_common",
  "stakedex_withdraw_stake_interface",
@@ -6766,7 +6744,7 @@ dependencies = [
  "jupiter-amm-interface",
  "marinade_finance_interface",
  "solana-program",
- "spl-token 6.0.0",
+ "spl-token 8.0.0",
  "stakedex_deposit_sol_interface",
  "stakedex_deposit_stake_interface",
  "stakedex_sdk_common",
@@ -6785,8 +6763,8 @@ dependencies = [
  "solana-account-decoder",
  "solana-client",
  "solana-sdk",
- "spl-associated-token-account 4.0.0",
- "spl-token 6.0.0",
+ "spl-associated-token-account",
+ "spl-token 8.0.0",
  "stakedex_interface",
  "stakedex_jup_interface",
  "stakedex_lido",
@@ -6819,7 +6797,7 @@ dependencies = [
  "jupiter-amm-interface",
  "solana-program",
  "spl-stake-pool",
- "spl-token 6.0.0",
+ "spl-token 8.0.0",
  "stakedex_deposit_sol_interface",
  "stakedex_deposit_stake_interface",
  "stakedex_jup_interface",
@@ -6835,7 +6813,7 @@ dependencies = [
  "anyhow",
  "jupiter-amm-interface",
  "solana-program",
- "spl-token 6.0.0",
+ "spl-token 8.0.0",
  "stakedex_deposit_stake_interface",
  "stakedex_jup_interface",
  "stakedex_sdk_common",
