@@ -6,7 +6,7 @@ use jupiter_amm_interface::{
     AccountMap, Amm, AmmContext, KeyedAccount, Quote, QuoteParams, SwapParams,
 };
 use lazy_static::lazy_static;
-use sanctum_lst_list::{PoolInfo, SanctumLst};
+use sanctum_lst_list::PoolInfo;
 use solana_sdk::{instruction::Instruction, pubkey::Pubkey, system_program};
 use spl_token::native_mint;
 use stakedex_interface::{
@@ -30,7 +30,7 @@ use stakedex_sdk_common::{
 use stakedex_spl_stake_pool::{SplStakePoolStakedex, SplStakePoolStakedexWithWithdrawSol};
 use stakedex_unstake_it::{UnstakeItStakedex, UnstakeItStakedexPrefund};
 
-pub use sanctum_lst_list::SanctumLstList;
+pub use sanctum_lst_list::{SanctumLst, SanctumLstList};
 pub use stakedex_interface::ID as stakedex_program_id;
 
 /// mainnet LUT that contains prefund accounts and other common accounts
@@ -627,7 +627,15 @@ impl Stakedex {
                     Box::new(OneWayPoolPair::new(withdraw, deposit))
                 }
                 match_stakedexes!(SplStakePool, UnstakeIt, withdraw, deposit) => {
-                    Box::new(OneWayPoolPair::new(withdraw, deposit))
+                    let stake_pool_addr = withdraw.inner.stake_pool_addr;
+
+                    let r = Box::new(OneWayPoolPair::new(withdraw, deposit));
+                    // if stake_pool_addr
+                    //     == Pubkey::from_str("prt1stdbFCFXpEcx9rxwJK63zhYo43V5JCXzGWXkPGn").unwrap()
+                    // {
+                    //     // panic!("found: {}", r.key());
+                    // }
+                    r
                 }
                 match_stakedexes!(Lido, SplStakePool, withdraw, deposit) => {
                     Box::new(OneWayPoolPair::new(withdraw, deposit))
